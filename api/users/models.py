@@ -65,6 +65,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     is_seeker = models.BooleanField(default=False)
     is_employer = models.BooleanField(default=False)
+    account_type = models.CharField(max_length=55, default="blank")
 
     is_admin = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)

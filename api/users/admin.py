@@ -15,12 +15,13 @@ class User_Admin(UserAdmin):
         "username",
         "first_name",
         "last_name",
-        "date_joined",
-        "last_login",
+        "account_type",
         "is_seeker",
         "is_employer",
         "is_admin",
-        "is_staff",
+        # "is_staff",
+        "date_joined",
+        "last_login",
     )
     search_fields = (
         "id",
@@ -36,9 +37,8 @@ class User_Admin(UserAdmin):
     filter_horizontal = ()
 
     list_filter = (
-        "id",
+        "account_type",
         "is_admin",
-        "is_staff",
     )
     fieldsets = (
         (
@@ -56,8 +56,7 @@ class User_Admin(UserAdmin):
             "permissions",
             {
                 "fields": (
-                    "is_seeker",
-                    "is_employer",
+                    "account_type",
                     "is_staff",
                     "is_admin",
                     "is_active",
