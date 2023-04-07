@@ -1,9 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializers import (
-    # SeekerProfileSerializer,
-    # JobSerializer,
+    SeekerProfileSerializer,
     EmployerProfileSerializer,
+    JobSerializer,
 )
 from .models import EmployerProfile, Job
 from seekers.models import SeekerProfile
@@ -52,4 +52,40 @@ class EmployerProfileView(APIView):
 
 
 class SeekerProfilesView(APIView):
-    pass
+    def get(self, request, *args, **kwargs):
+        print(kwargs)
+        user = self.request.user
+        if user.is_employer:
+            if "id" in kwargs:
+                id = kwargs["id"]
+                try:
+                    profile = SeekerProfile.objects.get(id=id)
+                    serializer = SeekerProfileSerializer(profile)
+                    return Response(serializer.data)
+                except SeekerProfile.DoesNotExist:
+                    return Response(status=404)
+            else:
+                profiles = SeekerProfile.objects.all()
+                serializer = SeekerProfileSerializer(profiles, many=True)
+                return Response(serializer.data)
+        else:
+            return Response({"unauthorized": "Only Employers can access this page"})
+
+
+class JobView(APIView):
+    def get(self, request, *args, **kwargs):
+        user = self.request.user
+        if user.is_employer:
+            if "id" in kwargs:
+                try:
+                    recruiter = EmployerProfile.objects.get(user=user)
+                    job = Job.objects.filter(recruiter=recruiter, id=id)
+                    serializer = JobSerializer(job)
+                    return Response(serializer.data)
+                except Job.DoesNotExist:
+                    return Response({"error": "No jobs posted by User"})
+            else:
+                recruiter = EmployerProfile.objects.get(user=user)
+                jobs = Job.objects.filter(recruiter=recruiter)
+                serializer = JobSerializer(jobs, many=True)
+                return Response(serializer.data)

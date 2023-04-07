@@ -19,7 +19,7 @@ class EmployerProfile(models.Model):
 
 
 class Job(models.Model):
-    job_recruiter = models.ForeignKey(
+    recruiter = models.ForeignKey(
         EmployerProfile,
         on_delete=models.DO_NOTHING,
         related_name="jobRecruiter",
