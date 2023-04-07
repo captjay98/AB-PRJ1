@@ -5,7 +5,7 @@ from django.contrib.auth.admin import UserAdmin
 # Register your models her.
 
 
-class SeekerProfileAdmin(UserAdmin):
+class SeekerProfileAdmin(admin.ModelAdmin):
     list_display = (
         "user",
         "phone_number",
@@ -14,9 +14,9 @@ class SeekerProfileAdmin(UserAdmin):
         "country",
         "ethnicity",
         # "skills",
-        "cv",
-        "passport",
-        "visa",
+        # "cv",
+        # "passport",
+        # "visa",
     )
     search_fields = (
         "user",
@@ -29,34 +29,34 @@ class SeekerProfileAdmin(UserAdmin):
 
     filter_horizontal = ()
 
-    list_filter = (
+    list_filter = [
         "state",
         "country",
         "ethnicity",
-    )
+    ]
 
 
 class SkillAdmin(admin.ModelAdmin):
-    list_display = {
+    list_display = [
         "name",
-    }
+    ]
 
 
 class QualificationAdmin(admin.ModelAdmin):
-    list_display = {
+    list_display = [
         "title",
         "body",
-    }
+    ]
 
 
 class RegisterAdmin(admin.ModelAdmin):
-    list_display = {
+    list_display = [
         "title",
         "body",
-    }
+    ]
 
 
-admin.site.register(SeekerProfile)
-admin.site.register(Skill)
-admin.site.register(Qualification)
-admin.site.register(Experience)
+admin.site.register(SeekerProfile, SeekerProfileAdmin)
+admin.site.register(Skill, SkillAdmin)
+admin.site.register(Qualification, QualificationAdmin)
+admin.site.register(Experience, RegisterAdmin)
