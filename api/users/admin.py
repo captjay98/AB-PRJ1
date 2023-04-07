@@ -57,6 +57,8 @@ class User_Admin(UserAdmin):
             {
                 "fields": (
                     "account_type",
+                    "is_seeker",
+                    "is_employer",
                     "is_staff",
                     "is_admin",
                     "is_active",

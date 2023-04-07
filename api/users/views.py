@@ -27,18 +27,62 @@ class UserRegistrationView(APIView):
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request, format=None):
-        serializer = UserRegistrationSerializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.save()
+        try:
+            serializer = UserRegistrationSerializer(data=request.data)
+            if serializer.is_valid():
+                user = serializer.save()
+                return Response(
+                    {
+                        "user": serializer.data,
+                        "success": "User Succesfully Created",
+                    },
+                    status=status.HTTP_201_CREATED,
+                )
+            else:
+                return Response(
+                    {"error": serializer.errors},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+        except error:
+            return Response({"error": "Something went wrong"})
+
+
+@method_decorator(csrf_protect, name="dispatch")
+class LoginView(APIView):
+    permission_classes = (permissions.AllowAny,)
+
+    def post(self, request, format=None):
+        try:
+            data = self.request.data
+            email = data["email"]
+            password = data["password"]
+            user = authenticate(email=email.lower(), password=password)
+            if user:
+                login(request, user)
+                return Response({"success": "Login Succesful"})
+            else:
+                return Response({"error": "Invalid Email or Password"})
+        except error:
             return Response(
                 {
-                    "user": serializer.data,
-                    "success": "User Succesfully Created",
-                },
-                status=status.HTTP_201_CREATED,
+                    "error": "Something went wrong \
+                             while attempting Login, Please contact admin"
+                }
             )
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LogOutView(APIView):
+    def post(self, request, format=None):
+        try:
+            logout(request)
+            return Response({"success": "logout Successful"})
+        except error:
+            return Response(
+                {
+                    "error": "Something went wrong \
+                            while attempting Logout, contact admin"
+                }
+            )
 
 
 class UserLoginView(APIView):

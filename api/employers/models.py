@@ -14,6 +14,9 @@ class EmployerProfile(models.Model):
         related_name="EmployerProfile",
     )
 
+    def __str__(self):
+        return f"{self.user.first_name} {self.user.last_name}"
+
 
 class Job(models.Model):
     job_recruiter = models.ForeignKey(
