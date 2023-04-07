@@ -9,9 +9,9 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api-auth/", include("rest_framework.urls")),
     path("api/users/", include("users.urls")),
+    path("api/employers/", include("employers.urls")),
     # path("core/", include("users.urls")),
     # path("seekers/", include("users.urls")),
-    # path("employers/", include("users.urls")),
 ]
 
 
