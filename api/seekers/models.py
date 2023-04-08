@@ -1,9 +1,11 @@
 from django.db import models
 from django.db.models.fields import related
-from users.models import User
 from django.conf import settings
 from django_countries.fields import CountryField
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
 ETHCHOICES = (
