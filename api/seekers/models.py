@@ -66,6 +66,12 @@ class SeekerProfile(models.Model):
         related_name="SeekerProfile",
     )
 
+    date_of_bith = models.DateField(
+        verbose_name=_("Date of Birth"),
+        blank=True,
+        null=True,
+    )
+
     phone_number = models.CharField(
         verbose_name=_("Phone number"),
         max_length=50,
