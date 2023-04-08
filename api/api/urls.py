@@ -11,7 +11,7 @@ urlpatterns = [
     path("api/users/", include("users.urls")),
     path("api/employers/", include("employers.urls")),
     path("api/seekers/", include("seekers.urls")),
-    # path("core/", include("users.urls")),
+    path("api/core/", include("core.urls")),
 ]
 
 
