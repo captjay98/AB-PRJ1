@@ -1,5 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import status
 from .serializers import (
     SeekerProfileSerializer,
     EmployerProfileSerializer,
@@ -7,7 +8,8 @@ from .serializers import (
 )
 from .models import EmployerProfile, Job
 from seekers.models import SeekerProfile
-from users.serializers import UserSerializer
+
+# from users.serializers import UserSerializer
 
 
 class EmployerProfileView(APIView):
@@ -21,7 +23,9 @@ class EmployerProfileView(APIView):
             employerProfile = EmployerProfileSerializer(employerProfile)
             return Response({"employer": employerProfile.data})
         else:
-            return Response({"unauthorized": "Only Employers can access this page"})
+            return Response(
+                {"unauthorized": "Only Employers can access this page"},
+            )
 
     def put(self, request):
         user = request.user
@@ -32,10 +36,22 @@ class EmployerProfileView(APIView):
                     employer_profile, data=request.data
                 )
                 if serializer.is_valid():
-                    user.first_name = request.data.get("first_name", user.first_name)
-                    user.last_name = request.data.get("last_name", user.last_name)
-                    user.username = request.data.get("username", user.username)
-                    user.email = request.data.get("email", user.email)
+                    user.first_name = request.data.get(
+                        "first_name",
+                        user.first_name,
+                    )
+                    user.last_name = request.data.get(
+                        "last_name",
+                        user.last_name,
+                    )
+                    user.username = request.data.get(
+                        "username",
+                        user.username,
+                    )
+                    user.email = request.data.get(
+                        "email",
+                        user.email,
+                    )
                     user.save()
                     serializer.save()
 
@@ -69,7 +85,9 @@ class SeekerProfilesView(APIView):
                 serializer = SeekerProfileSerializer(profiles, many=True)
                 return Response(serializer.data)
         else:
-            return Response({"unauthorized": "Only Employers can access this page"})
+            return Response(
+                {"unauthorized": "Only Employers can access this page"},
+            )
 
 
 class JobView(APIView):

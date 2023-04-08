@@ -3,11 +3,14 @@ from os import error
 from django.contrib.auth import authenticate, login, logout
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
-from employers.models import EmployerProfile
+
+# from employers.models import EmployerProfile
 from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from seekers.models import SeekerProfile
+
+# from seekers.models import SeekerProfile
+
 
 from .serializers import (
     UserRegistrationSerializer,
@@ -30,7 +33,7 @@ class UserRegistrationView(APIView):
         try:
             serializer = UserRegistrationSerializer(data=request.data)
             if serializer.is_valid():
-                user = serializer.save()
+                serializer.save()
                 return Response(
                     {
                         "user": serializer.data,
