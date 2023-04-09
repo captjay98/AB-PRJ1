@@ -7,7 +7,7 @@ from .serializers import (
 )
 from employers.models import Job
 from employers.serializers import JobSerializer
-from rest_framework import generics
+from rest_framework import generics, permissions
 from rest_framework.views import APIView
 from .models import Faq, Article, InterviewHelp
 
@@ -16,21 +16,25 @@ from .models import Faq, Article, InterviewHelp
 
 
 class FaqView(generics.ListAPIView):
+    permission_classes = (permissions.AllowAny,)
     queryset = Faq.objects.all()
     serializer_class = FaqSerializer
 
 
 class ArticleView(generics.ListAPIView):
+    permission_classes = (permissions.AllowAny,)
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
 
 
 class InterviewHelpView(generics.ListAPIView):
+    permission_classes = (permissions.AllowAny,)
     queryset = InterviewHelp.objects.all()
     serializer_class = InterviewHelpSerializer
 
 
 class JobSearchView(generics.ListAPIView):
+    permission_classes = (permissions.AllowAny,)
     serializer_class = JobSerializer
 
     def get_queryset(self):
