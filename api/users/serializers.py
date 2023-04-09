@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate
 from seekers.models import SeekerProfile
 from employers.models import EmployerProfile
 
@@ -69,5 +69,31 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         return user
 
 
-class UserLooginSerializer(serializers.ModelSerializer):
-    pass
+class UserLoginSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField()
+    password = serializers.CharField()
+
+    class Meta:
+        model = User
+        fields = ["email", "password"]
+
+    def validate(self, data):
+        email = data.get("email")
+        password = data.get("password")
+        if email and password:
+            user = authenticate(email=email.lower(), password=password)
+            if user:
+                if not user.is_active:
+                    raise serializers.ValidationError(
+                        "User account is disabled.",
+                    )
+            else:
+                raise serializers.ValidationError(
+                    "Unable to log in with provided credentials."
+                )
+        else:
+            raise serializers.ValidationError(
+                'Must include "email" and "password".',
+            )
+        data["user"] = user
+        return data

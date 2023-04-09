@@ -14,6 +14,7 @@ from rest_framework.views import APIView
 
 from .serializers import (
     UserRegistrationSerializer,
+    UserLoginSerializer,
 )
 
 
@@ -50,43 +51,42 @@ class UserRegistrationView(APIView):
             return Response({"error": "Something went wrong"})
 
 
+# class LoginView(APIView):
+#     permission_classes = (permissions.AllowAny,)
+
+#     def post(self, request, format=None):
+#         try:
+#             data = self.request.data
+#             email = data["email"]
+#             password = data["password"]
+#             user = authenticate(email=email.lower(), password=password)
+#             if user:
+#                 login(request, user)
+#                 return Response({"success": "Login Succesful"})
+#             else:
+#                 return Response({"error": "Invalid Email or Password"})
+#         except error:
+#             return Response(
+#                 {
+#                     "error": "Something went wrong \
+#                              while attempting Login, Please contact admin"
+#                 }
+#             )
+
+
 @method_decorator(csrf_protect, name="dispatch")
-class LoginView(APIView):
-    permission_classes = (permissions.AllowAny,)
-
-    def post(self, request, format=None):
-        try:
-            data = self.request.data
-            email = data["email"]
-            password = data["password"]
-            user = authenticate(email=email.lower(), password=password)
-            if user:
-                login(request, user)
-                return Response({"success": "Login Succesful"})
-            else:
-                return Response({"error": "Invalid Email or Password"})
-        except error:
-            return Response(
-                {
-                    "error": "Something went wrong \
-                             while attempting Login, Please contact admin"
-                }
-            )
-
-
-class LogOutView(APIView):
-    def post(self, request, format=None):
-        try:
-            logout(request)
-            return Response({"success": "logout Successful"})
-        except error:
-            return Response(
-                {
-                    "error": "Something went wrong \
-                            while attempting Logout, contact admin"
-                }
-            )
-
-
 class UserLoginView(APIView):
     permission_classes = (permissions.AllowAny,)
+
+    def post(self, request, format=None):
+        serializer = UserLoginSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data["user"]
+        login(request, user)
+        return Response({"success": "Login successful"})
+
+
+class UserLogOutView(APIView):
+    def post(self, request, format=None):
+        logout(request)
+        return Response({"success": "logout Successful"})
