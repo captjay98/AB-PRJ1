@@ -7,20 +7,18 @@ from .serializers import (
     SeekerProfileSerializer,
 )
 from rest_framework import permissions
+
 User = get_user_model()
 
 
-class IsSeeker(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
-        return request.user.is_authenticated and request.user.is_seeker
-
-
 class SeekerProfileView(APIView):
-    permission_classes = [IsSeeker]
-    serializer_class = SeekerProfileSerializer
-
     def get(self, request):
         user = self.request.user
+        if not user.is_seeker:
+            return Response(
+                {"error": "Seeker Only Page"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
         try:
             profile = SeekerProfile.objects.get(user=user)
         except SeekerProfile.DoesNotExist:
@@ -65,7 +63,11 @@ class SeekerProfileView(APIView):
         user = self.request.user
         data = self.request.data
         if not user.is_seeker:
-            return Response({"Error": "SEEKER ONLY PAGE"})
+            return Response(
+                {"error": "Seeker Only Page"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
         try:
             seekerprofile = SeekerProfile.objects.get(user=user)
         except SeekerProfile.DoesNotExist:
@@ -116,7 +118,8 @@ class SeekerProfileView(APIView):
             qualification_id = data["qualification_id"]
             try:
                 qualification = Qualification.objects.get(
-                    id=qualification_id, seeker_profile=seeker_profile)
+                    id=qualification_id, seeker_profile=seeker_profile
+                )
                 qualification.delete()
             except Qualification.DoesNotExist:
                 return Response(
@@ -129,7 +132,8 @@ class SeekerProfileView(APIView):
             experience_id = data["experience_id"]
             try:
                 experience = Experience.objects.get(
-                    id=experience_id, seeker_profile=seeker_profile)
+                    id=experience_id, seeker_profile=seeker_profile
+                )
                 experience.delete()
             except Experience.DoesNotExist:
                 return Response(
