@@ -12,7 +12,6 @@ gunicorn==20.1.0
 mysqlclient==2.1.1
 Pillow==9.5.0
 psycopg2-binary==2.9.6
-pygraphviz==1.10
 pytz==2023.3
 sqlparse==0.4.3
 typing-extensions==4.5.0
