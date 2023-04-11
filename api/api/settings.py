@@ -92,8 +92,16 @@ WSGI_APPLICATION = "api.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-DATABASES = {"default": {env("DATABASE_URL")}}
-
+# DATABASES = {"default": {env("DATABASE_URL")}}
+DATABASES = {
+    # read os.environ['DATABASE_URL'] and raises
+    # ImproperlyConfigured exception if not found
+    #
+    # The db() method is an alias for db_url().
+    "default": env.db(),
+    # read os.environ['SQLITE_URL']
+    "extra": env.db_url("SQLITE_URL", default="sqlite:////tmp/my-tmp-sqlite.db"),
+}
 # DATABASES = {
 #     "default": {
 #         "ENGINE": "django.db.backends.sqlite3",
