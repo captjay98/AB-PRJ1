@@ -35,8 +35,8 @@ SECRET_KEY = env("SECRET_KEY")
 DEBUG = env("DEBUG")
 
 ALLOWED_HOSTS = [
-    "https://interviewdemo.onrender.com",
-    "http://127.0.0.1",
+    "interviewdemo.onrender.com",
+    "127.0.0.1",
 ]
 
 # Application definition
