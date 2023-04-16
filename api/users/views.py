@@ -1,21 +1,36 @@
-from os import error
-
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import logout
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
-
-# from employers.models import EmployerProfile
-from rest_framework import permissions, status
+from django.contrib.auth import get_user_model
+from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from dj_rest_auth.registration.views import (
+    RegisterView,
+    SocialLoginView,
+)
 
-# from seekers.models import SeekerProfile
+from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
+from allauth.socialaccount.providers.github.views import GitHubOAuth2Adapter
+
+
+from dj_rest_auth.views import (
+    LoginView,
+    PasswordResetView,
+    PasswordResetConfirmView,
+    PasswordChangeView,
+)
 
 
 from .serializers import (
-    UserRegistrationSerializer,
-    UserLoginSerializer,
+    CustomRegisterSerializer,
+    CustomLoginSerializer,
+    CustomPasswordResetSerializer,
+    CustomPasswordResetConfirmSerializer,
+    CustomPasswordChangeSerializer,
 )
+
+User = get_user_model()
 
 
 @method_decorator(ensure_csrf_cookie, name="dispatch")
@@ -27,66 +42,58 @@ class GetCSRFToken(APIView):
 
 
 @method_decorator(ensure_csrf_cookie, name="dispatch")
-class UserRegistrationView(APIView):
+class CustomRegisterView(RegisterView):
     permission_classes = (permissions.AllowAny,)
-
-    def post(self, request, format=None):
-        try:
-            serializer = UserRegistrationSerializer(data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(
-                    {
-                        "user": serializer.data,
-                        "success": "User Succesfully Created",
-                    },
-                    status=status.HTTP_201_CREATED,
-                )
-            else:
-                return Response(
-                    {"error": serializer.errors},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-        except error:
-            return Response({"error": "Something went wrong"})
+    serializer_class = CustomRegisterSerializer
 
 
-# class LoginView(APIView):
-#     permission_classes = (permissions.AllowAny,)
-
-#     def post(self, request, format=None):
-#         try:
-#             data = self.request.data
-#             email = data["email"]
-#             password = data["password"]
-#             user = authenticate(email=email.lower(), password=password)
-#             if user:
-#                 login(request, user)
-#                 return Response({"success": "Login Succesful"})
-#             else:
-#                 return Response({"error": "Invalid Email or Password"})
-#         except error:
-#             return Response(
-#                 {
-#                     "error": "Something went wrong \
-#                              while attempting Login, Please contact admin"
-#                 }
-#             )
+@method_decorator(ensure_csrf_cookie, name="dispatch")
+class CustomLoginView(LoginView):
+    permission_classes = [permissions.AllowAny]
+    serializer_class = CustomLoginSerializer
 
 
-@method_decorator(csrf_protect, name="dispatch")
-class UserLoginView(APIView):
-    permission_classes = (permissions.AllowAny,)
+class GoogleLogin(SocialLoginView):
+    adapter_class = GoogleOAuth2Adapter
 
-    def post(self, request, format=None):
-        serializer = UserLoginSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data["user"]
-        login(request, user)
-        return Response({"success": "Login successful"})
+
+class GithubLogin(SocialLoginView):
+    adapter_class = GitHubOAuth2Adapter
 
 
 class UserLogOutView(APIView):
     def post(self, request, format=None):
         logout(request)
         return Response({"success": "logout Successful"})
+
+
+class CustomPasswordResetView(PasswordResetView):
+    email_template_name = "email/password_reset.html"
+    subject_template_name = "email/password_reset_subject.txt"
+    serializer_class = CustomPasswordResetSerializer
+
+
+class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+    serializer_class = CustomPasswordResetConfirmSerializer
+
+
+class CustomPasswordChangeView(PasswordChangeView):
+    serializer_class = CustomPasswordChangeSerializer
+
+
+# @method_decorator(csrf_protect, name="dispatch")
+# class ChangePasswordView(APIView):
+#     def post(self, request, format=None):
+#         user = self.request.user
+#         data = self.request.data
+#         serializer = ChangePasswordSerializer(data)
+#         old_password = data["old_password"]
+#         new_password = data["new_password"]
+#         if serializer.is_valid():
+#             if not user.check_password(old_password):
+#                 return Response(
+#                     {"error": "Incorrect Old Password"},
+#                 )
+#             user.set_password(new_password)
+#             user.save()
+#             return Response({"succcess": "Password Updated Succesfully"})

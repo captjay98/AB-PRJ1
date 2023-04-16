@@ -2,6 +2,19 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model, authenticate
 from seekers.models import SeekerProfile
 from employers.models import EmployerProfile
+from rest_framework.validators import UniqueValidator
+from dj_rest_auth.registration.serializers import (
+    RegisterSerializer,
+    SocialLoginSerializer,
+    SocialConnectSerializer,
+)
+
+from dj_rest_auth.serializers import (
+    LoginSerializer,
+    PasswordResetSerializer,
+    PasswordResetConfirmSerializer,
+    PasswordChangeSerializer,
+)
 
 User = get_user_model()
 
@@ -15,43 +28,45 @@ class UserSerializer(serializers.ModelSerializer):
             "last_name",
             "username",
             "email",
-        ]
-
-
-class UserRegistrationSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(
-        write_only=True,
-        required=True,
-        style={"input_type": "password", "placeholder": "Password"},
-    )
-    re_password = serializers.CharField(
-        write_only=True,
-        required=True,
-        style={"input_type": "password", "placeholder": "Confirm Password"},
-    )
-
-    class Meta:
-        model = User
-        fields = [
-            "first_name",
-            "last_name",
-            "email",
-            "username",
-            "password",
-            "re_password",
             "account_type",
         ]
 
-    def create(self, validated_data):
-        password = validated_data.pop("password")
-        re_password = validated_data.pop("re_password")
-        account_type = validated_data["account_type"]
-        if password != re_password:
+
+class CustomRegisterSerializer(RegisterSerializer):
+    first_name = serializers.CharField(required=True)
+    last_name = serializers.CharField(required=True)
+    email = serializers.EmailField(
+        required=True,
+        validators=[
+            UniqueValidator(queryset=User.objects.all()),
+        ],
+    )
+    username = serializers.CharField(
+        required=True,
+        validators=[
+            UniqueValidator(queryset=User.objects.all()),
+        ],
+    )
+    password1 = serializers.CharField(
+        write_only=True, required=True, style={"input_type": "password"}
+    )
+    password2 = serializers.CharField(
+        write_only=True, required=True, style={"input_type": "password"}
+    )
+    account_type = serializers.ChoiceField(
+        choices=(("seeker", "seeker"), ("employer", "employer")), required=True
+    )
+
+    def validate(self, attrs):
+        if attrs["password1"] != attrs["password2"]:
             raise serializers.ValidationError(
                 {"password": "Passwords must match."},
             )
-        user = User(**validated_data)
-        user.set_password(password)
+
+        return attrs
+
+    def custom_signup(self, request, user):
+        account_type = self.validated_data["account_type"]
         if account_type == "seeker":
             user.is_seeker = True
             user.save()
@@ -66,10 +81,11 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 {"account_type": "Invalid account type."},
             )
+
         return user
 
 
-class UserLoginSerializer(serializers.ModelSerializer):
+class CustomLoginSerializer(LoginSerializer):
     email = serializers.EmailField()
     password = serializers.CharField()
 
@@ -97,3 +113,31 @@ class UserLoginSerializer(serializers.ModelSerializer):
             )
         data["user"] = user
         return data
+
+
+class CustomPasswordResetSerializer(PasswordResetSerializer):
+    pass
+
+
+class CustomPasswordResetConfirmSerializer(PasswordResetConfirmSerializer):
+    pass
+
+
+class CustomPasswordChangeSerializer(PasswordChangeSerializer):
+    pass
+
+
+class GoogleLoginSerializer(SocialLoginSerializer):
+    provider = "google"
+
+
+class GoogleConnectSerializer(SocialConnectSerializer):
+    provider = "google"
+
+
+class GitHubLoginSerializer(SocialLoginSerializer):
+    provider = "github"
+
+
+class GitHubConnectSerializer(SocialConnectSerializer):
+    provider = "github"
