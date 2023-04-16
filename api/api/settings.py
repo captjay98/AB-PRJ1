@@ -183,7 +183,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.TokenAuthentication",
+        "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
     ],
 }
 
@@ -195,7 +195,11 @@ AUTHENTICATION_BACKENDS = [
 # REST_AUTH_REGISTER_SERIALIZERS = {
 #     "REGISTER_SERIALIZER": "users.serializers.CustomRegisterSerializer",
 # }
-
+REST_AUTH = {
+    "USE_JWT": True,
+    "JWT_AUTH_COOKIE": "inter-view-auth",
+    "JWT_AUTH_REFRESH_COOKIE": "my-refresh-token",
+}
 
 ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = True
 
@@ -206,8 +210,6 @@ ACCOUNT_CONFIRM_EMAIL_ON_GET = False
 LOGIN_URL = "http://localhost:8000/api/users/login"
 
 SITE_ID = 1
-REST_USE_JWT = True
-JWT_AUTH_COOKIE = "inter-view-auth"
 
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
