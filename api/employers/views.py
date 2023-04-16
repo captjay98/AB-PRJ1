@@ -10,6 +10,14 @@ from .models import EmployerProfile, Job
 from seekers.models import SeekerProfile
 
 
+class EmployerHomeView(APIView):
+    pass
+
+
+class SeekerProfileDetailsView(APIView):
+    pass
+
+
 class EmployerProfileView(APIView):
     def get(self, request, format=None):
         user = self.request.user
@@ -17,7 +25,6 @@ class EmployerProfileView(APIView):
             return Response(
                 {"unauthorized": "Only Employers can access this page"},
                 status=status.HTTP_403_FORBIDDEN,
-
             )
         try:
             employerProfile = EmployerProfile.objects.get(user=user)
@@ -40,9 +47,7 @@ class EmployerProfileView(APIView):
 
         try:
             employer_profile = EmployerProfile.objects.get(user=user)
-            serializer = EmployerProfileSerializer(
-                employer_profile, data=request.data
-            )
+            serializer = EmployerProfileSerializer(employer_profile, data=request.data)
             if serializer.is_valid():
                 user.first_name = request.data.get(
                     "first_name",

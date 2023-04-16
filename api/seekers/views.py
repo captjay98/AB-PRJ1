@@ -152,3 +152,7 @@ class SeekerProfileView(APIView):
                     {"error": "Skill does not exist"},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
+
+
+class SeekerHomeView(APIView):
+    pass
