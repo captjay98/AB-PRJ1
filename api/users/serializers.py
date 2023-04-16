@@ -53,8 +53,9 @@ class CustomRegisterSerializer(RegisterSerializer):
     password2 = serializers.CharField(
         write_only=True, required=True, style={"input_type": "password"}
     )
-    account_type = serializers.ChoiceField(
-        choices=(("seeker", "seeker"), ("employer", "employer")), required=True
+    account_type = serializers.CharField(
+        write_only=True,
+        required=True,
     )
 
     def validate(self, attrs):
@@ -66,7 +67,12 @@ class CustomRegisterSerializer(RegisterSerializer):
         return attrs
 
     def custom_signup(self, request, user):
+        first_name = self.validated_data["first_name"]
+        last_name = self.validated_data["last_name"]
         account_type = self.validated_data["account_type"]
+        user.first_name = first_name
+        user.last_name = last_name
+        user.account_type = account_type
         if account_type == "seeker":
             user.is_seeker = True
             user.save()
