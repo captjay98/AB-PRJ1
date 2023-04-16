@@ -26,8 +26,8 @@ from dj_rest_auth.views import (
 
 
 urlpatterns = [
-    # path("getcsrf", GetCSRFToken.as_view()),
     # path("account-confirm-email/<str:key>/", ConfirmEmailView.as_view()),
+    path("getcsrf", GetCSRFToken.as_view()),
     path(
         "register",
         CustomRegisterView.as_view(),
