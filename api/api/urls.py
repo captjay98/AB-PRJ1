@@ -2,11 +2,13 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include  # , re_path
+from core.views import HomeView
 
 # from django.views.generic import TemplateView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("", HomeView.as_view()),
     path("api/users/", include("users.urls")),
     path("api/employers/", include("employers.urls")),
     path("api/seekers/", include("seekers.urls")),
