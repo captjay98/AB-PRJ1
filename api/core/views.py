@@ -15,6 +15,10 @@ from .models import Faq, Article, InterviewHelp
 # Create your views here.
 
 
+class HomeView(APIView):
+    permission_classes = (permissions.AllowAny,)
+
+
 class FaqView(generics.ListAPIView):
     permission_classes = (permissions.AllowAny,)
     queryset = Faq.objects.all()
