@@ -58,6 +58,23 @@ class SeekerProfileSerializer(CountryFieldMixin, serializers.ModelSerializer):
 
 
 class JobSerializer(serializers.ModelSerializer):
+    recruiter = serializers.PrimaryKeyRelatedField(read_only=True)
+
+    class Meta:
+        model = Job
+        fields = [
+            "recruiter",
+            "id",
+            "title",
+            "description",
+            "required_skills",
+            "location",
+            "industry",
+            "date_posted",
+        ]
+
+
+class JobCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Job
         fields = [
@@ -69,3 +86,5 @@ class JobSerializer(serializers.ModelSerializer):
             "industry",
             "date_posted",
         ]
+
+        # def create(self, **validated_data):
