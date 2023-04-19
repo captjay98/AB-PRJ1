@@ -3,6 +3,7 @@ from django.urls import path, include, re_path
 
 from .views import (
     GetCSRFToken,
+    CheckAuthenticated,
     CustomRegisterView,
     CustomLoginView,
     GoogleLogin,
@@ -28,6 +29,7 @@ from dj_rest_auth.views import (
 urlpatterns = [
     # path("account-confirm-email/<str:key>/", ConfirmEmailView.as_view()),
     path("getcsrf", GetCSRFToken.as_view()),
+    path("isauthenticated", CheckAuthenticated.as_view()),
     path(
         "register",
         CustomRegisterView.as_view(),

@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.github.views import GitHubOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
@@ -34,6 +35,17 @@ from .serializers import (
 )
 
 User = get_user_model()
+
+
+@method_decorator(ensure_csrf_cookie, name="dispatch")
+class CheckAuthenticated(APIView):
+    permission_classes = (permissions.AllowAny,)
+
+    def get(self, request, format=None):
+        user = self.request.user
+        if user.is_authenticated:
+            return Response({"Authenticated": "User is Authenticated"})
+        return Response({"NotAuthenticated": "User Not Authenticated"})
 
 
 @method_decorator(ensure_csrf_cookie, name="dispatch")
