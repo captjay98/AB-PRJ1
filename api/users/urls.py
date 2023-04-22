@@ -2,6 +2,7 @@ from django.urls import path, include, re_path
 
 
 from .views import (
+    UserView,
     GetCSRFToken,
     CheckAuthenticated,
     CustomRegisterView,
@@ -28,6 +29,7 @@ from dj_rest_auth.views import (
 
 urlpatterns = [
     # path("account-confirm-email/<str:key>/", ConfirmEmailView.as_view()),
+    path("", UserView.as_view()),
     path("getcsrf", GetCSRFToken.as_view()),
     path("isauthenticated", CheckAuthenticated.as_view()),
     path(
@@ -70,8 +72,12 @@ urlpatterns = [
         CustomPasswordChangeView.as_view(),
         name="rest_password_change",
     ),
-    # path("verify-email/", VerifyEmailView.as_view(), name="rest_verify_email"),
-    # path("registration/resend-email/", LogoutView.as_view()),
+    # path(
+    #     "verify-email/",
+    #     VerifyEmailView.as_view(),
+    #     name="rest_verify_email",
+    # ),
+    # # path("registration/resend-email/", LogoutView.as_view()),
     # path(
     #     "account-confirm-email/",
     #     VerifyEmailView.as_view(),

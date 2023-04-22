@@ -27,6 +27,7 @@ from dj_rest_auth.views import (
 
 
 from .serializers import (
+    UserSerializer,
     CustomRegisterSerializer,
     CustomLoginSerializer,
     CustomPasswordResetSerializer,
@@ -116,3 +117,12 @@ class CustomPasswordChangeView(PasswordChangeView):
 #             user.set_password(new_password)
 #             user.save()
 #             return Response({"succcess": "Password Updated Succesfully"})
+
+
+class UserView(APIView):
+    def get(self, request):
+        user = self.request.user
+        user = User.objects.get(id=user.id)
+        serializer = UserSerializer(user)
+
+        return Response(serializer.data)
