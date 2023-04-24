@@ -6,7 +6,6 @@ from .models import Skill, SeekerProfile, Qualification, Experience
 from .serializers import (
     SeekerProfileSerializer,
 )
-from rest_framework import permissions
 
 User = get_user_model()
 
