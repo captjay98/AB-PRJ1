@@ -1,11 +1,10 @@
 from django.contrib.auth import logout
 from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth import get_user_model
 from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.github.views import GitHubOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
@@ -13,9 +12,6 @@ from dj_rest_auth.registration.views import (
     RegisterView,
     SocialLoginView,
 )
-
-from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
-from allauth.socialaccount.providers.github.views import GitHubOAuth2Adapter
 
 
 from dj_rest_auth.views import (
@@ -28,6 +24,7 @@ from dj_rest_auth.views import (
 
 from .serializers import (
     UserSerializer,
+    CustomUserSerializer,
     CustomRegisterSerializer,
     CustomLoginSerializer,
     CustomPasswordResetSerializer,
@@ -62,11 +59,29 @@ class CustomRegisterView(RegisterView):
     permission_classes = (permissions.AllowAny,)
     serializer_class = CustomRegisterSerializer
 
+    def get_response_data(self, user):
+        response_data = super().get_response_data(user)
+        custom_data = CustomUserSerializer(user).data
+        response_data.update(custom_data)
+        return response_data
+
 
 @method_decorator(ensure_csrf_cookie, name="dispatch")
 class CustomLoginView(LoginView):
     permission_classes = [permissions.AllowAny]
     serializer_class = CustomLoginSerializer
+
+    def get_response_data(self, user):
+        response_data = super().get_response_data(user)
+        custom_data = CustomUserSerializer(user).data
+        response_data.update(custom_data)
+        return response_data
+
+    # def get_response(self):
+    #     response = super().get_response()
+    #     user_data = CustomUserSerializer(instance=self.token.user, context={'request': self.request}).data
+    #     response.data['user'] = user_data
+    #     return response
 
 
 class GoogleLogin(SocialLoginView):
@@ -99,24 +114,6 @@ class CustomPasswordResetConfirmView(PasswordResetConfirmView):
 
 class CustomPasswordChangeView(PasswordChangeView):
     serializer_class = CustomPasswordChangeSerializer
-
-
-# @method_decorator(csrf_protect, name="dispatch")
-# class ChangePasswordView(APIView):
-#     def post(self, request, format=None):
-#         user = self.request.user
-#         data = self.request.data
-#         serializer = ChangePasswordSerializer(data)
-#         old_password = data["old_password"]
-#         new_password = data["new_password"]
-#         if serializer.is_valid():
-#             if not user.check_password(old_password):
-#                 return Response(
-#                     {"error": "Incorrect Old Password"},
-#                 )
-#             user.set_password(new_password)
-#             user.save()
-#             return Response({"succcess": "Password Updated Succesfully"})
 
 
 class UserView(APIView):

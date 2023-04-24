@@ -8,7 +8,7 @@ from dj_rest_auth.registration.serializers import (
     SocialLoginSerializer,
     SocialConnectSerializer,
 )
-
+from allauth.account.adapter import get_adapter
 from dj_rest_auth.serializers import (
     LoginSerializer,
     PasswordResetSerializer,
@@ -32,46 +32,40 @@ class UserSerializer(serializers.ModelSerializer):
         ]
 
 
+class CustomUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            "username",
+            "account_type",
+        ]
+
+
 class CustomRegisterSerializer(RegisterSerializer):
     first_name = serializers.CharField(required=True)
     last_name = serializers.CharField(required=True)
-    email = serializers.EmailField(
-        required=True,
-        validators=[
-            UniqueValidator(queryset=User.objects.all()),
-        ],
-    )
-    username = serializers.CharField(
-        required=True,
-        validators=[
-            UniqueValidator(queryset=User.objects.all()),
-        ],
-    )
-    password1 = serializers.CharField(
-        write_only=True, required=True, style={"input_type": "password"}
-    )
-    password2 = serializers.CharField(
-        write_only=True, required=True, style={"input_type": "password"}
-    )
     account_type = serializers.CharField(
         write_only=True,
         required=True,
     )
+    # class Meta:
+    #     model = User
+    #     fields = ["id",
+    #               "email",
+    #               "username",
+    #               "first_name",
+    #               "last_name",
+    #               "account_type",]
 
-    def validate(self, attrs):
-        if attrs["password1"] != attrs["password2"]:
-            raise serializers.ValidationError(
-                {"password": "Passwords must match."},
-            )
-
-        return attrs
+    def get_cleaned_data(self):
+        data_dict = super().get_cleaned_data()
+        data_dict["first_name"] = self.validated_data.get("first_name", "")
+        data_dict["last_name"] = self.validated_data.get("last_name", "")
+        data_dict["account_type"] = self.validated_data.get("account_type", "")
+        return data_dict
 
     def custom_signup(self, request, user):
-        first_name = self.validated_data["first_name"]
-        last_name = self.validated_data["last_name"]
         account_type = self.validated_data["account_type"]
-        user.first_name = first_name
-        user.last_name = last_name
         user.account_type = account_type
         if account_type == "seeker":
             user.is_seeker = True
