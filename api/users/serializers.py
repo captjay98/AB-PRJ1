@@ -41,14 +41,19 @@ class CustomUserSerializer(serializers.ModelSerializer):
         ]
 
 
+def account_type_validator(value):
+    if value not in ["seeker", "employer"]:
+        raise serializers.ValidationError("Invalid account type.")
+
+
 class CustomRegisterSerializer(RegisterSerializer):
     first_name = serializers.CharField(required=True)
     last_name = serializers.CharField(required=True)
     account_type = serializers.CharField(
         write_only=True,
         required=True,
-    )
-    # class Meta:
+        validators=[account_type_validator],
+    )  # class Meta:
     #     model = User
     #     fields = ["id",
     #               "email",
@@ -65,8 +70,14 @@ class CustomRegisterSerializer(RegisterSerializer):
         return data_dict
 
     def custom_signup(self, request, user):
+        account_types = ["seeker", "employer"]
         account_type = self.validated_data["account_type"]
         user.account_type = account_type
+        if account_type not in account_types:
+            raise serializers.ValidationError(
+                {"account_type": "Invalid account type."},
+            )
+
         if account_type == "seeker":
             user.is_seeker = True
             user.save()
@@ -77,12 +88,12 @@ class CustomRegisterSerializer(RegisterSerializer):
             user.save()
             employer = EmployerProfile(user=user)
             employer.save()
+
         else:
             raise serializers.ValidationError(
-                {"account_type": "Invalid account type."},
+                {"error": "an unknown error occured"},
             )
-
-        return user
+        return super().custom_signup(request, user)
 
 
 class CustomLoginSerializer(LoginSerializer):
@@ -91,7 +102,7 @@ class CustomLoginSerializer(LoginSerializer):
 
     class Meta:
         model = User
-        fields = ["email", "password"]
+        fields = ["email", "password", "account_type"]
 
     def validate(self, data):
         email = data.get("email")

@@ -71,17 +71,15 @@ class CustomLoginView(LoginView):
     permission_classes = [permissions.AllowAny]
     serializer_class = CustomLoginSerializer
 
-    def get_response_data(self, user):
-        response_data = super().get_response_data(user)
-        custom_data = CustomUserSerializer(user).data
-        response_data.update(custom_data)
-        return response_data
+    def get_response(self):
+        response = super().get_response()
 
-    # def get_response(self):
-    #     response = super().get_response()
-    #     user_data = CustomUserSerializer(instance=self.token.user, context={'request': self.request}).data
-    #     response.data['user'] = user_data
-    #     return response
+        # Add account_type to response data
+        user = self.request.user
+        custom_data = CustomUserSerializer(user).data
+        response.data.update(custom_data)
+
+        return response
 
 
 class GoogleLogin(SocialLoginView):
