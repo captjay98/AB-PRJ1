@@ -41,11 +41,11 @@ class Job(models.Model):
         null=True,
     )
 
-    # required_skills = models.ManyToManyField(
-    #     Skill,
-    #     verbose_name=("Required Skills"),
-    #     blank=True,
-    # )
+    required_skills = models.ManyToManyField(
+        Skill,
+        verbose_name=("Required Skills"),
+        blank=True,
+    )
 
     location = models.CharField(
         verbose_name="Location",
