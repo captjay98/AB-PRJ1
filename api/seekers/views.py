@@ -2,7 +2,8 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
-from .models import Skill, SeekerProfile, Qualification, Experience
+from .models import SeekerProfile, Qualification, Experience
+from core.models import Skill
 from .serializers import (
     SeekerProfileSerializer,
 )

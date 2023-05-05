@@ -1,15 +1,22 @@
-from django.shortcuts import render
 from .serializers import (
+    SkillSerializer,
     FaqSerializer,
     ArticleSerializer,
     InterviewHelpSerializer,
     JobFilterSerializer,
 )
+
 from employers.models import Job
 from employers.serializers import JobSerializer
 from rest_framework import generics, permissions
 from rest_framework.views import APIView
-from .models import Faq, Article, InterviewHelp
+from .models import Faq, Article, InterviewHelp, Skill
+
+
+class SkillView(generics.ListAPIView):
+    permission_classes = (permissions.AllowAny,)
+    queryset = Skill.objects.all()
+    serializer_class = SkillSerializer
 
 
 class HomeView(APIView):
@@ -57,3 +64,11 @@ class JobSearchView(generics.ListAPIView):
                 queryset = queryset.filter(skills=skills)
 
         return queryset
+
+
+class IntelligentSearch(APIView):
+    def get(self, request):
+        pass
+
+    def post(self, request):
+        pass

@@ -4,6 +4,16 @@ from django.db import models
 # Create your models here.
 
 
+class Skill(models.Model):
+    name = models.CharField(
+        verbose_name=("skill"),
+        max_length=55,
+    )
+
+    def __str__(self):
+        return f"{self.name}"
+
+
 class Faq(models.Model):
     question = models.CharField(
         max_length=255,

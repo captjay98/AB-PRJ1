@@ -1,12 +1,13 @@
 from django.db import models
-from django.db.models.fields import related
 from django.conf import settings
 from django_countries.fields import CountryField
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
+from core.models import Skill
+
+# from employers.models import Application
 
 User = get_user_model()
-
 
 ETHCHOICES = (
     ("Ethnicity", "Ethnicity"),
@@ -47,16 +48,6 @@ def cv_filepath(self, filename):
 
 def visa_filepath(self, filename):
     return f"visas/{self.id}/visa.pdf"
-
-
-class Skill(models.Model):
-    name = models.CharField(
-        verbose_name=_("skill"),
-        max_length=55,
-    )
-
-    def __str__(self):
-        return f"{self.name}"
 
 
 class SeekerProfile(models.Model):
@@ -178,3 +169,7 @@ class Experience(models.Model):
 
     def __str__(self):
         return f"{self.title}"
+
+
+# class JobApplication(models.model):
+# application = models.ForeignKey(Application)

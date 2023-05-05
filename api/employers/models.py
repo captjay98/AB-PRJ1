@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
-from django.db.models.fields import related
+
+# from django.db.models.fields import related
 from django.utils import timezone
 
 from seekers.models import SeekerProfile, Skill
