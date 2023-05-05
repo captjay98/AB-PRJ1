@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import EmployerProfile, Job, Application
-from seekers.models import SeekerProfile, Experience, Qualification
+from seekers.models import SeekerProfile, Experience, Qualification, Skill
 from django_countries.serializers import CountryFieldMixin
 
 
@@ -34,9 +34,16 @@ class QualificationSerializer(serializers.ModelSerializer):
         fields = ["title", "body"]
 
 
+class SkillSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Skill
+        fields = ["id", "name"]
+
+
 class SeekerProfileSerializer(CountryFieldMixin, serializers.ModelSerializer):
     experiences = ExperienceSerializer(many=True)
     qualifications = QualificationSerializer(many=True)
+    skills = SkillSerializer(many=True, required=False, read_only=True)
 
     class Meta:
         model = SeekerProfile
@@ -59,6 +66,7 @@ class SeekerProfileSerializer(CountryFieldMixin, serializers.ModelSerializer):
 
 class JobSerializer(serializers.ModelSerializer):
     recruiter = serializers.PrimaryKeyRelatedField(read_only=True)
+    # skills = SkillSerializer(many=True, required=False, read_only=True)
 
     class Meta:
         model = Job
@@ -75,19 +83,21 @@ class JobSerializer(serializers.ModelSerializer):
 
 
 class JobCreateSerializer(serializers.ModelSerializer):
+    recruiter = serializers.PrimaryKeyRelatedField(read_only=True)
+    # skills = SkillSerializer(many=True, required=False, read_only=True)
+
     class Meta:
         model = Job
         fields = [
             "recruiter",
+            "id",
             "title",
             "description",
             "required_skills",
             "location",
             "industry",
             "date_posted",
-        ]
-
-        # def create(self, **validated_data):
+        ]  # def create(self, **validated_data):
 
 
 class ApplicationSerializer(serializers.ModelSerializer):

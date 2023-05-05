@@ -149,7 +149,22 @@ class JobsView(APIView):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-    def put(self, request):
+    # def put(self, request):
+    #     user = self.request.user
+    #     if not user.is_employer:
+    #         return Response(
+    #             {"unauthorized": "Only Employers can create jobs"},
+    #             status=status.HTTP_401_UNAUTHORIZED,
+    #         )
+    #     recruiter = EmployerProfile.objects.get(user=user)
+    #     job = Job(recruiter=recruiter)
+    #     serializer = JobSerializer(job, data=request.data)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def post(self, request):
         user = self.request.user
         if not user.is_employer:
             return Response(
@@ -157,12 +172,33 @@ class JobsView(APIView):
                 status=status.HTTP_401_UNAUTHORIZED,
             )
         recruiter = EmployerProfile.objects.get(user=user)
-        job = Job(recruiter=recruiter)
-        serializer = JobSerializer(job, data=request.data)
+        serializer = JobSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            print(serializer.data)
+            title = serializer.data.get("title")
+            description = serializer.data.get("description")
+            skills = serializer.data.get("reqired_skills")
+            location = serializer.data.get("location")
+            industry = serializer.data.get("industry")
+
+            job = Job.objects.create(
+                recruiter=recruiter,
+                title=title,
+                description=description,
+                skills=skills,
+                location=location,
+                industry=industry,
+            )
+            job.save()
+            return Response(
+                serializer.data,
+                status=status.HTTP_200_OK,
+            )
+        else:
+            return Response(
+                {"error": "I Really don't know"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
 
 class JobView(APIView):
