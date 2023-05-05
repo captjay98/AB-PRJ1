@@ -12,9 +12,6 @@ from rest_framework.views import APIView
 from .models import Faq, Article, InterviewHelp
 
 
-# Create your views here.
-
-
 class HomeView(APIView):
     permission_classes = (permissions.AllowAny,)
 
@@ -48,11 +45,15 @@ class JobSearchView(generics.ListAPIView):
         if serializer.is_valid():
             industry = serializer.validated_data.get("industry")
             location = serializer.validated_data.get("location")
+            skills = serializer.validated_data.get("skills")
 
             if industry:
                 queryset = queryset.filter(industry=industry)
 
             if location:
                 queryset = queryset.filter(location=location)
+
+            if skills:
+                queryset = queryset.filter(skills=skills)
 
         return queryset
