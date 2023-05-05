@@ -26,7 +26,10 @@ class EmployerProfileView(APIView):
         try:
             employerProfile = EmployerProfile.objects.get(user=user)
             employerProfile = EmployerProfileSerializer(employerProfile)
-            return Response({"employer": employerProfile.data})
+            return Response(
+                {"employer": employerProfile.data},
+                status=status.HTTP_200_OK,
+            )
 
         except EmployerProfile.DoesNotExist:
             return Response(
@@ -149,20 +152,24 @@ class JobsView(APIView):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-    # def put(self, request):
-    #     user = self.request.user
-    #     if not user.is_employer:
-    #         return Response(
-    #             {"unauthorized": "Only Employers can create jobs"},
-    #             status=status.HTTP_401_UNAUTHORIZED,
-    #         )
-    #     recruiter = EmployerProfile.objects.get(user=user)
-    #     job = Job(recruiter=recruiter)
-    #     serializer = JobSerializer(job, data=request.data)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # def put(self, request):
+        #     user = self.request.user
+        #     if not user.is_employer:
+        #         return Response(
+        #             {"unauthorized": "Only Employers can create jobs"},
+        #             status=status.HTTP_401_UNAUTHORIZED,
+        #         )
+        #     recruiter = EmployerProfile.objects.get(user=user)
+        #     job = Job(recruiter=recruiter)
+        #     serializer = JobSerializer(job, data=request.data)
+        #     if serializer.is_valid():
+        #         serializer.save()
+        # return Response(serializer.data,
+        # status=status.HTTP_201_CREATED,)
+        # return Response(
+        #     serializer.errors,
+        #     status=status.HTTP_400_BAD_REQUEST,
+        # )
 
     def post(self, request):
         user = self.request.user

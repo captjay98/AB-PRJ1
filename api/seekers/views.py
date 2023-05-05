@@ -30,7 +30,7 @@ class SeekerProfileView(APIView):
         serializer = SeekerProfileSerializer(profile)
         return Response(
             serializer.data,
-            status=status.HTTP_202_OK,
+            status=status.HTTP_200_OK,
         )
 
     def put(self, request, *args, **kwargs):
@@ -56,7 +56,7 @@ class SeekerProfileView(APIView):
             serializer.save()
             return Response(
                 serializer.data,
-                status=status.HTTP_202_OK,
+                status=status.HTTP_200_OK,
             )
         else:
             return Response(
