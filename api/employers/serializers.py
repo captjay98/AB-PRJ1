@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import EmployerProfile, Job
+from .models import EmployerProfile, Job, Application
 from seekers.models import SeekerProfile, Experience, Qualification
 from django_countries.serializers import CountryFieldMixin
 
@@ -88,3 +88,10 @@ class JobCreateSerializer(serializers.ModelSerializer):
         ]
 
         # def create(self, **validated_data):
+
+
+class ApplicationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Application
+        # fields = "__all__"
+        fields = ["job_status", "application_status", "date_applied"]
