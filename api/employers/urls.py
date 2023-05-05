@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path
 from .views import (
     EmployerHomeView,
     SeekerProfilesView,
@@ -6,6 +6,8 @@ from .views import (
     EmployerProfileView,
     JobsView,
     JobView,
+    ApplicationsView,
+    # ApplicationView,
 )
 
 
@@ -16,4 +18,6 @@ urlpatterns = [
     path("seekers/<int:id>", SeekerProfileDetailsView.as_view()),
     path("jobs", JobsView.as_view()),
     path("jobs/<int:id>", JobView.as_view()),
+    path("jobs/<int:id>/applications", ApplicationsView.as_view()),
+    # path("jobs/applications/<int:id>", ApplicationView.as_view()),
 ]
