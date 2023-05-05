@@ -5,8 +5,9 @@ from .serializers import (
     SeekerProfileSerializer,
     EmployerProfileSerializer,
     JobSerializer,
+    ApplicationSerializer,
 )
-from .models import EmployerProfile, Job
+from .models import EmployerProfile, Job, Application
 from seekers.models import SeekerProfile
 
 
@@ -67,7 +68,10 @@ class EmployerProfileView(APIView):
                 # user.save()
                 serializer.save()
 
-                return Response({"success": serializer.data})
+                return Response(
+                    {"success": serializer.data},
+                    status=status.HTTP_200_OK,
+                )
 
         except EmployerProfile.DoesNotExist:
             return Response(
@@ -92,11 +96,16 @@ class SeekerProfilesView(APIView):
                 serializer = SeekerProfileSerializer(profile)
                 return Response(serializer.data)
             except SeekerProfile.DoesNotExist:
-                return Response(status=404)
+                return Response(
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
         else:
             profiles = SeekerProfile.objects.all()
             serializer = SeekerProfileSerializer(profiles, many=True)
-            return Response(serializer.data)
+            return Response(
+                serializer.data,
+                status=status.HTTP_200_OK,
+            )
 
 
 class SeekerProfileDetailsView(APIView):
@@ -113,7 +122,7 @@ class SeekerProfileDetailsView(APIView):
                 id = kwargs["id"]
                 seeker = SeekerProfile.objects.get(id=id)
                 serializer = SeekerProfileSerializer(seeker)
-                return Response(serializer.data)
+                return Response(serializer.data, status=status.HTTP_200_OK)
             except SeekerProfile.DoesNotExist:
                 return Response(
                     {"error": "No user with that ID found"},
@@ -133,9 +142,12 @@ class JobsView(APIView):
             recruiter = EmployerProfile.objects.get(user=user)
             jobs = Job.objects.filter(recruiter=recruiter)
             serializer = JobSerializer(jobs, many=True)
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         except Job.DoesNotExist:
-            return Response({"error": "Profile Does Not Exist"})
+            return Response(
+                {"error": "Profile Does Not Exist"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
     def put(self, request):
         user = self.request.user
@@ -166,10 +178,16 @@ class JobView(APIView):
             recruiter = EmployerProfile.objects.get(user=user)
             jobs = Job.objects.filter(recruiter=recruiter, id=id)
             serializer = JobSerializer(jobs, many=True)
-            return Response(serializer.data)
+            return Response(
+                serializer.data,
+                status=status.HTTP_200_OK,
+            )
 
         except Job.DoesNotExist:
-            return Response({"error": "Job Not Found"})
+            return Response(
+                {"error": "Job Not Found"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
     def put(self, request, id):
         user = self.request.user
@@ -183,12 +201,55 @@ class JobView(APIView):
             job = Job.objects.get(id=id, recruiter__user=user)
         except Job.DoesNotExist:
             return Response(
-                {"error": "Job not found"}, status=status.HTTP_404_NOT_FOUND
+                {"error": "Job not found"},
+                status=status.HTTP_404_NOT_FOUND,
             )
 
         serializer = JobSerializer(job, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(
+                serializer.data,
+                status=status.HTTP_200_OK,
+            )
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+
+class ApplicationsView(APIView):
+    def get(self, request):
+        user = self.request.user
+
+        if not user.is_employer:
+            return Response("")
+
+        try:
+            applications = Application.objects.filter(employer=user)
+            serializer = ApplicationSerializer(applications, many=True)
+            return Response(
+                serializer.data,
+                status=status.HTTP_200_OK,
+            )
+        except Application.DoesNotExist:
+            return Response(
+                "Application does Not Exist",
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+
+class ApplicationView(APIView):
+    def get(self, request):
+        user = self.request.user
+        user = user
+
+
+#         application = Application.objects.filter(
+#             employer=user,
+#             job=job,
+#             seeker=seeker,
+#         )
+#         serializer = ApplicationSerializer(application)
+#         return Response(serializer.data)
