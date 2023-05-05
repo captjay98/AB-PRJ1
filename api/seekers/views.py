@@ -28,7 +28,10 @@ class SeekerProfileView(APIView):
                 status=status.HTTP_403_FORBIDDEN,
             )
         serializer = SeekerProfileSerializer(profile)
-        return Response(serializer.data)
+        return Response(
+            serializer.data,
+            status=status.HTTP_202_OK,
+        )
 
     def put(self, request, *args, **kwargs):
         user = self.request.user
@@ -51,7 +54,10 @@ class SeekerProfileView(APIView):
         )
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(
+                serializer.data,
+                status=status.HTTP_202_OK,
+            )
         else:
             return Response(
                 serializer.errors,
@@ -70,14 +76,19 @@ class SeekerProfileView(APIView):
         try:
             seekerprofile = SeekerProfile.objects.get(user=user)
         except SeekerProfile.DoesNotExist:
-            return Response(status=404)
+            return Response(
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
         self._remove_skill(data, seekerprofile)
         self._remove_qualification(data, seekerprofile)
         self._remove_experience(data, seekerprofile)
 
         serializer = SeekerProfileSerializer(seekerprofile)
-        return Response(serializer.data)
+        return Response(
+            serializer.data,
+            status=status.HTTP_202_OK,
+        )
 
     def _create_qualifications(self, data, seeker_profile):
         if "qualifications" in data:
