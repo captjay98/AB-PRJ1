@@ -57,7 +57,7 @@ class SeekerProfile(models.Model):
         related_name="SeekerProfile",
     )
 
-    date_of_bith = models.DateField(
+    date_of_birth = models.DateField(
         verbose_name=_("Date of Birth"),
         blank=True,
         null=True,
