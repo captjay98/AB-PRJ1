@@ -6,10 +6,14 @@ from .serializers import (
     JobFilterSerializer,
 )
 
+# from seekers.models import SeekerProfile
 from employers.models import Job
 from employers.serializers import JobSerializer
 from rest_framework import generics, permissions
+from django.contrib.gis.db.models.functions import Distance
+from django.contrib.gis.geos import Point
 from rest_framework.views import APIView
+from rest_framework.response import Response
 from .models import Faq, Article, InterviewHelp, Skill
 
 
@@ -17,10 +21,6 @@ class SkillView(generics.ListAPIView):
     permission_classes = (permissions.AllowAny,)
     queryset = Skill.objects.all()
     serializer_class = SkillSerializer
-
-
-class HomeView(APIView):
-    permission_classes = (permissions.AllowAny,)
 
 
 class FaqView(generics.ListAPIView):
@@ -41,34 +41,105 @@ class InterviewHelpView(generics.ListAPIView):
     serializer_class = InterviewHelpSerializer
 
 
-class JobSearchView(generics.ListAPIView):
+class HomeView(APIView):
     permission_classes = (permissions.AllowAny,)
-    serializer_class = JobSerializer
 
-    def get_queryset(self):
-        queryset = Job.objects.all()
-        serializer = JobFilterSerializer(data=self.request.query_params)
+
+class JobSearchView(generics.ListAPIView):
+    def post(self, request, *args, **kwargs):
+        pass
+
+    # permission_classes = (permissions.AllowAny,)
+    # serializer_class = JobSerializer
+
+    # def get_queryset(self):
+    #     queryset = Job.objects.all()
+    #     serializer = JobFilterSerializer(data=self.request.query_params)
+
+    #     if serializer.is_valid():
+    #         industry = serializer.validated_data.get("industry")
+    #         location = serializer.validated_data.get("location")
+    #         skills = serializer.validated_data.get("skills")
+
+    #         if industry:
+    #             queryset = queryset.filter(industry=industry)
+
+    #         if location:
+    #             queryset = queryset.filter(location=location)
+
+    #         if skills:
+    #             queryset = queryset.filter(skills=skills)
+
+    #     return queryset
+
+
+def get_user_location(request):
+    pass
+    """get the current location of the
+       user from the frontend in long and lat
+    """
+
+
+class IntelligentSearch(APIView):
+    permission_classes = (permissions.AllowAny,)
+
+    def get(self, request):
+        location = get_user_location(request)
+        print(location)
+        if location is not None:
+            jobs = Job.objects.annotate(
+                distance=Distance(
+                    "location",
+                    location,
+                )
+            ).filter(distance__lt=10000)
+        else:
+            jobs = Job.objects.all()
+
+        serializer = JobSerializer(jobs, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        # user = request.user
+        # seeker = SeekerProfile.objects.get(user=user)
+        data = self.request.query_params
+        serializer = JobFilterSerializer(data=data)
 
         if serializer.is_valid():
             industry = serializer.validated_data.get("industry")
             location = serializer.validated_data.get("location")
             skills = serializer.validated_data.get("skills")
 
-            if industry:
-                queryset = queryset.filter(industry=industry)
+        jobs = Job.objects.all()
 
-            if location:
-                queryset = queryset.filter(location=location)
+        if location:
+            location_point = Point(
+                float(location.split(",")[1]), float(location.split(",")[0])
+            )
+            jobs = jobs.filter(
+                location__distance_lte=(location_point, Distance(km=10)),
+            )
 
-            if skills:
-                queryset = queryset.filter(skills=skills)
+        if industry:
+            jobs = jobs.filter(industry__icontains=industry)
 
-        return queryset
+        if skills:
+            jobs = jobs.filter(skills__icontains=skills)
 
+        serializer = JobSerializer(jobs, many=True)
+        return Response(serializer.data)
+        #     if industry and skills:
+        #         results = Job.objects.filter(industry=industry,
+        #                                       skills=skills,)
+        #     elif industry:
+        #         results = Job.objects.filter(industry=industry)
+        #     elif location:
+        #         results = Job.objects.filter(location=location)
+        #     elif skills:
+        #         results = Job.objects.filter(skills=skills)
+        #     else:
+        #         results = Job.objects.all()
 
-class IntelligentSearch(APIView):
-    def get(self, request):
-        pass
+        #     res = JobSerializer(data=results, many=True)
 
-    def post(self, request):
-        pass
+        # return Response(res.data)
