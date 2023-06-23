@@ -1,6 +1,8 @@
+from django.contrib.gis.geos import Point
+from geopy.geocoders import Nominatim
+from django.contrib.gis.db.models import PointField
 from django.db import models
 from django.conf import settings
-from django_countries.fields import CountryField
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
 from core.models import Skill
@@ -8,34 +10,6 @@ from core.models import Skill
 # from employers.models import Application
 
 User = get_user_model()
-
-ETHCHOICES = (
-    ("Ethnicity", "Ethnicity"),
-    ("African", "African"),
-    ("African American", "African American"),
-    ("Arab", "Arab"),
-    ("Asian", "Asian"),
-    ("Any other Asian background", "Any other Asian background"),
-    ("Bangladeshi", "Bangladeshi"),
-    ("Caribbean", "Caribbean"),
-    ("Chinese", "Chinese"),
-    ("English", "English"),
-    ("Gypsy or Irish Traveller", "Gypsy or Irish Traveller"),
-    ("Hispanic", "Hispanic"),
-    ("Indian", "Indian"),
-    ("Irish", "Irish"),
-    ("Mixed or Multiple background", "Mixed or Multiple background"),
-    ("Mixed or Multiple ethnic groups", "Mixed or Multiple ethnic groups"),
-    ("Native American", "Native American"),
-    ("Northern Irish", "Northern Irish"),
-    ("Pacific Islander", "Pacific Islander"),
-    ("Pakistani", "Pakistani"),
-    ("Scottish", "Scotish"),
-    ("White", "White"),
-    ("White and Black African", "White and Black African"),
-    ("White and Black Caribbean", "White and Black Caribbean"),
-    ("Welsh", "Welsh"),
-)
 
 
 def passport_filepath(self, filename):
@@ -48,6 +22,14 @@ def cv_filepath(self, filename):
 
 def visa_filepath(self, filename):
     return f"visas/{self.id}/visa.pdf"
+
+
+def geocode_location(location):
+    geoLocator = Nominatim(user_agent="api")
+    location = geoLocator.geocode(location)
+    if location:
+        return Point(location.longitude, location.latitude)
+    return None
 
 
 class SeekerProfile(models.Model):
@@ -79,23 +61,28 @@ class SeekerProfile(models.Model):
     )
 
     state = models.CharField(
-        verbose_name=_("State "),
+        verbose_name=_("State"),
         max_length=50,
         blank=True,
         null=True,
     )
 
-    country = CountryField(
+    country = models.CharField(
         verbose_name=_("Country"),
         max_length=50,
         blank=True,
         null=True,
     )
 
+    location = PointField(
+        _("Location"),
+        null=True,
+        blank=True,
+    )
+
     ethnicity = models.CharField(
         verbose_name=_("Ethnicity"),
         max_length=50,
-        choices=ETHCHOICES,
         blank=True,
         null=True,
     )
@@ -124,6 +111,22 @@ class SeekerProfile(models.Model):
         blank=True,
         null=True,
     )
+
+    def save(self, *args, **kwargs):
+        if self.city or self.state or self.country:
+            location_parts = []
+
+            if self.city:
+                location_parts.append(self.city)
+            if self.state:
+                location_parts.append(self.state)
+            if self.country:
+                location_parts.append(self.country)
+
+            location = ", ".join(location_parts)
+            self.location = geocode_location(location)
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"
@@ -169,7 +172,3 @@ class Experience(models.Model):
 
     def __str__(self):
         return f"{self.title}"
-
-
-# class JobApplication(models.model):
-# application = models.ForeignKey(Application)
