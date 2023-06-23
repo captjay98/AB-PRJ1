@@ -11,10 +11,6 @@ from .models import EmployerProfile, Job, Application
 from seekers.models import SeekerProfile
 
 
-class EmployerHomeView(APIView):
-    pass
-
-
 class EmployerProfileView(APIView):
     def get(self, request, format=None):
         user = self.request.user
@@ -52,23 +48,7 @@ class EmployerProfileView(APIView):
                 data=request.data,
             )
             if serializer.is_valid():
-                # user.first_name = request.data.get(
-                #     "first_name",
-                #     user.first_name,
-                # )
-                # user.last_name = request.data.get(
-                #     "last_name",
-                #     user.last_name,
-                # )
-                # user.username = request.data.get(
-                #     "username",
-                #     user.username,
-                # )
-                # user.email = request.data.get(
-                #     "email",
-                #     user.email,
-                # )
-                # user.save()
+                serializer.save(partial=True)
                 serializer.save()
 
                 return Response(
@@ -152,58 +132,29 @@ class JobsView(APIView):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        # def put(self, request):
-        #     user = self.request.user
-        #     if not user.is_employer:
-        #         return Response(
-        #             {"unauthorized": "Only Employers can create jobs"},
-        #             status=status.HTTP_401_UNAUTHORIZED,
-        #         )
-        #     recruiter = EmployerProfile.objects.get(user=user)
-        #     job = Job(recruiter=recruiter)
-        #     serializer = JobSerializer(job, data=request.data)
-        #     if serializer.is_valid():
-        #         serializer.save()
-        # return Response(serializer.data,
-        # status=status.HTTP_201_CREATED,)
-        # return Response(
-        #     serializer.errors,
-        #     status=status.HTTP_400_BAD_REQUEST,
-        # )
-
     def post(self, request):
-        user = self.request.user
+        user = request.user
         if not user.is_employer:
             return Response(
-                {"unauthorized": "Only Employers can create jobs"},
+                {"unauthorized": "Only employers can create jobs"},
                 status=status.HTTP_401_UNAUTHORIZED,
             )
-        recruiter = EmployerProfile.objects.get(user=user)
+
+        try:
+            recruiter = EmployerProfile.objects.get(user=user)
+        except EmployerProfile.DoesNotExist:
+            return Response(
+                {"error": "Employer profile does not exist"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         serializer = JobSerializer(data=request.data)
         if serializer.is_valid():
-            print(serializer.data)
-            title = serializer.data.get("title")
-            description = serializer.data.get("description")
-            skills = serializer.data.get("reqired_skills")
-            location = serializer.data.get("location")
-            industry = serializer.data.get("industry")
-
-            job = Job.objects.create(
-                recruiter=recruiter,
-                title=title,
-                description=description,
-                skills=skills,
-                location=location,
-                industry=industry,
-            )
-            job.save()
-            return Response(
-                serializer.data,
-                status=status.HTTP_200_OK,
-            )
+            job = serializer.save(recruiter=recruiter)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(
-                {"error": "I Really don't know"},
+                serializer.errors,
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -281,18 +232,3 @@ class ApplicationsView(APIView):
                 "Application does Not Exist",
                 status=status.HTTP_400_BAD_REQUEST,
             )
-
-
-class ApplicationView(APIView):
-    def get(self, request):
-        user = self.request.user
-        user = user
-
-
-#         application = Application.objects.filter(
-#             employer=user,
-#             job=job,
-#             seeker=seeker,
-#         )
-#         serializer = ApplicationSerializer(application)
-#         return Response(serializer.data)
