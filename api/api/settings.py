@@ -16,7 +16,6 @@ import environ
 from urllib.parse import urlparse
 
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # environ setup
@@ -25,21 +24,12 @@ env_file = os.path.join(BASE_DIR, ".env")
 env.read_env(env_file)
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env("SECRET_KEY")
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DEBUG")
 
-ALLOWED_HOSTS = [
-    "interviewdemo.onrender.com",
-    "127.0.0.1",
-]
+ALLOWED_HOSTS = ["interviewdemo.onrender.com", "127.0.0.1", "localhost"]
 
-# Application definition
 
 INSTALLED_APPS = [
     "jazzmin",
@@ -49,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.gis",
     "users",
     "core",
     "seekers",
@@ -108,27 +99,30 @@ WSGI_APPLICATION = "api.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-DATABASES = {
-    # read os.environ['DATABASE_URL'] and raises
-    # ImproperlyConfigured exception if not found
-    #
-    # The db() method is an alias for db_url().
-    "default": env.db(),
-    # read os.environ['SQLITE_URL']
-    "extra": env.db_url("SQLITE_URL", default="sqlite:////tmp/my-tmp-sqlite.db"),
-}
-
 # DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.mysql",
-#         "NAME": "inter",
-#         "USER": "inter",
-#         "PASSWORD": "987654321",
-#         "HOST": "localhost",
-#         "PORT": "3306",
-#     }
+#     # read os.environ['DATABASE_URL'] and raises
+#     # ImproperlyConfigured exception if not found
+#     #
+#     # The db() method is an alias for db_url().
+#     "default": env.db(),
+#     # read os.environ['SQLITE_URL']
+#     "extra": env.db_url(
+#         "SQLITE_URL",
+#         default="sqlite:////tmp/my-tmp-sqlite.db",
+#     ),
 # }
 
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.contrib.gis.db.backends.postgis",
+        "NAME": env("DB_NAME"),
+        "USER": env("DB_USER"),
+        "PASSWORD": env("DB_PASSWORD"),
+        "HOST": env("DB_HOST"),
+        "PORT": env("DB_PORT"),
+    }
+}
 
 # DATABASES = {
 #     "default": {
