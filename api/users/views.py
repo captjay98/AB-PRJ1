@@ -39,11 +39,20 @@ User = get_user_model()
 class CheckAuthenticated(APIView):
     permission_classes = (permissions.AllowAny,)
 
-    def get(self, request, format=None):
+    def get(self, request):
         user = self.request.user
         if user.is_authenticated:
             return Response({"Authenticated": "User is Authenticated"})
         return Response({"NotAuthenticated": "User Not Authenticated"})
+
+
+class UserView(APIView):
+    def get(self, request):
+        user = self.request.user
+        user = User.objects.get(id=user.id)
+        serializer = UserSerializer(user)
+
+        return Response(serializer.data)
 
 
 @method_decorator(ensure_csrf_cookie, name="dispatch")
@@ -74,7 +83,6 @@ class CustomLoginView(LoginView):
     def get_response(self):
         response = super().get_response()
 
-        # Add account_type to response data
         user = self.request.user
         custom_data = CustomUserSerializer(user).data
         response.data.update(custom_data)
@@ -112,12 +120,3 @@ class CustomPasswordResetConfirmView(PasswordResetConfirmView):
 
 class CustomPasswordChangeView(PasswordChangeView):
     serializer_class = CustomPasswordChangeSerializer
-
-
-class UserView(APIView):
-    def get(self, request):
-        user = self.request.user
-        user = User.objects.get(id=user.id)
-        serializer = UserSerializer(user)
-
-        return Response(serializer.data)

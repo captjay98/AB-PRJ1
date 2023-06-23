@@ -50,17 +50,10 @@ class CustomRegisterSerializer(RegisterSerializer):
     first_name = serializers.CharField(required=True)
     last_name = serializers.CharField(required=True)
     account_type = serializers.CharField(
-        write_only=True,
+        # write_only=True,
         required=True,
         validators=[account_type_validator],
-    )  # class Meta:
-    #     model = User
-    #     fields = ["id",
-    #               "email",
-    #               "username",
-    #               "first_name",
-    #               "last_name",
-    #               "account_type",]
+    )
 
     def get_cleaned_data(self):
         data_dict = super().get_cleaned_data()
