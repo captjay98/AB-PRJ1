@@ -1,12 +1,18 @@
+from django.contrib.gis.db.models import PointField
+from django.contrib.gis.geos import Point
+from geopy.geocoders import Nominatim
 from django.db import models
 from django.conf import settings
-
-# from django.db.models.fields import related
 from django.utils import timezone
-
 from seekers.models import SeekerProfile, Skill
 
-# Create your models here.
+
+def geocode_location(location):
+    geoLocator = Nominatim(user_agent="api")
+    location = geoLocator.geocode(location)
+    if location:
+        return Point(location.longitude, location.latitude)
+    return None
 
 
 class EmployerProfile(models.Model):
@@ -22,6 +28,11 @@ class EmployerProfile(models.Model):
 
 
 class Job(models.Model):
+    JOB_STATUS = (
+        ("open", "open"),
+        ("closed", "closed"),
+    )
+
     recruiter = models.ForeignKey(
         EmployerProfile,
         on_delete=models.DO_NOTHING,
@@ -48,11 +59,17 @@ class Job(models.Model):
         blank=True,
     )
 
-    location = models.CharField(
+    city = models.CharField(
         verbose_name="Location",
         max_length=55,
         blank=True,
         null=True,
+    )
+
+    location = PointField(
+        verbose_name=("Location"),
+        null=True,
+        blank=True,
     )
 
     industry = models.CharField(
@@ -66,8 +83,24 @@ class Job(models.Model):
         default=timezone.now,
     )
 
-    def __str__(self) -> str:
-        return self.title
+    job_status = models.CharField(
+        verbose_name=("job_status"),
+        max_length=50,
+        choices=JOB_STATUS,
+        default="open",
+        blank=True,
+        null=True,
+    )
+
+    def save(self, *args, **kwargs):
+        if self.city:
+            location = self.city
+            self.location = geocode_location(location)
+
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.title}"
 
 
 class Application(models.Model):
@@ -78,18 +111,8 @@ class Application(models.Model):
         ("Rejected", "Rejected"),
     )
 
-    JOB_STATUS = (
-        ("open", "open"),
-        ("closed", "closed"),
-    )
-
     applicant = models.ForeignKey(
         SeekerProfile,
-        on_delete=models.DO_NOTHING,
-    )
-
-    employer = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
         on_delete=models.DO_NOTHING,
     )
 
@@ -98,18 +121,11 @@ class Application(models.Model):
         on_delete=models.DO_NOTHING,
     )
 
-    job_status = models.CharField(
-        verbose_name=("job_status"),
-        max_length=50,
-        choices=JOB_STATUS,
-        blank=True,
-        null=True,
-    )
-
     application_status = models.CharField(
         verbose_name=("Application_status"),
         max_length=50,
         choices=APPLICATION_STATUS,
+        default="Submitted",
         blank=True,
         null=True,
     )
@@ -117,5 +133,3 @@ class Application(models.Model):
     date_applied = models.DateTimeField(
         auto_now_add=True,
     )
-
-    # remars = moels.CharField("")
