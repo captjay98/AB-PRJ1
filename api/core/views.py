@@ -6,6 +6,12 @@ from .serializers import (
     JobFilterSerializer,
 )
 
+
+from seekers.models import SeekerProfile
+from employers.models import Application
+from employers.serializers import ApplicationSerializer
+from rest_framework import status
+
 # from seekers.models import SeekerProfile
 from employers.models import Job
 from employers.serializers import JobSerializer
@@ -128,18 +134,72 @@ class IntelligentSearch(APIView):
 
         serializer = JobSerializer(jobs, many=True)
         return Response(serializer.data)
-        #     if industry and skills:
-        #         results = Job.objects.filter(industry=industry,
-        #                                       skills=skills,)
-        #     elif industry:
-        #         results = Job.objects.filter(industry=industry)
-        #     elif location:
-        #         results = Job.objects.filter(location=location)
-        #     elif skills:
-        #         results = Job.objects.filter(skills=skills)
-        #     else:
-        #         results = Job.objects.all()
 
-        #     res = JobSerializer(data=results, many=True)
 
-        # return Response(res.data)
+class JobView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        id = kwargs.get("id")
+        try:
+            job = Job.objects.get(id=id)
+            serializer = JobSerializer(job)
+            return Response(
+                serializer.data,
+                status=200,
+            )
+        except Job.DoesNotExist:
+            return Response(
+                {"error": "Job Not Found"},
+                status=404,
+            )
+
+
+class ApplicationsView(APIView):
+    permission_classes = [
+        permissions.AllowAny,
+    ]
+
+    def get(self, request):
+        user = request.user
+        applicant = SeekerProfile.objects.get(user=user)
+        applications = Application.objects.filter(applicant=applicant)
+        serializer = ApplicationSerializer(applications, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, *args, **kwargs):
+        # if "id" in kwargs:
+        #    id = kwargs["id"]
+        # job_id = kwargs.get("id")
+
+        user = request.user
+        data = request.data
+        applicant = SeekerProfile.objects.get(user=user)
+        id = kwargs["job_id"]
+        job = Job.objects.get(id=id)
+
+        serializer = ApplicationSerializer(data=data)
+        if serializer.is_valid():
+            application = serializer.save(
+                applicant=applicant,
+                job=job,
+            )
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    #     if industry and skills:
+    #         results = Job.objects.filter(industry=industry,
+    #                                       skills=skills,)
+    #     elif industry:
+    #         results = Job.objects.filter(industry=industry)
+    #     elif location:
+    #         results = Job.objects.filter(location=location)
+    #     elif skills:
+    #         results = Job.objects.filter(skills=skills)
+    #     else:
+    #         results = Job.objects.all()
+
+    #     res = JobSerializer(data=results, many=True)
+
+    # return Response(res.data)
