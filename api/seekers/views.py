@@ -119,22 +119,23 @@ class ApplicationsView(APIView):
         serializer = ApplicationSerializer(applications, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def post(self, request):
-        user = request.user
-        data = request.data
-        applicant = SeekerProfile.objects.get(user=user)
-        job_id = data.get("job_id")
-        job = Job.objects.get(id=job_id)
+    # def post(self, request):
+    #     user = request.user
+    #     data = request.data
+    #     applicant = SeekerProfile.objects.get(user=user)
+    #     job_id = data.get("job_id")
+    #     job = Job.objects.get(id=job_id)
 
-        serializer = ApplicationSerializer(data=data)
-        if serializer.is_valid():
-            application = serializer.save(
-                applicant=applicant,
-                job=job,
-            )
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+    #     serializer = ApplicationSerializer(data=data)
+    #     if serializer.is_valid():
+    #         application = serializer.save(
+    #             applicant=applicant,
+    #             job=job,
+    #         )
+    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    #     return Response(serializer.errors,
+    # status=status.HTTP_400_BAD_REQUEST)
 
 
 # class SeekerProfileView(APIView):
