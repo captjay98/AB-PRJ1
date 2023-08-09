@@ -80,10 +80,16 @@ class JobSearchView(generics.ListAPIView):
 
 
 def get_user_location(request):
-    pass
     """get the current location of the
-       user from the frontend in long and lat
+    user from the frontend in long and lat
     """
+    latitude = request.data.get("latitude")
+    longtitude = request.data.get("longtitude")
+
+    return {
+        "latitude": latitude,
+        "longtitude": longtitude,
+    }
 
 
 class IntelligentSearch(APIView):
