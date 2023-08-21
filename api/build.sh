@@ -6,7 +6,7 @@
 apt update -y && apt upgrade -y && apt install -y --no-install-recommends binutils libproj-dev gdal-bin libgdal-dev python3-gdal
 
 
-# pip install --global-option=build_ext --global-option="-I/usr/include/gdal" GDAL==`gdal-config --version`
+pip install --global-option=build_ext --global-option="-I/usr/include/gdal" GDAL==`gdal-config --version`
 
 
 # pip install -r requirements.txt
