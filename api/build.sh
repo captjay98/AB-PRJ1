@@ -1,7 +1,4 @@
 !/usr/bin/bash
-# exit on error
-# set -o errexit
-
 
 apt update -y && apt upgrade -y && apt install -y --no-install-recommends binutils libheif-dev libheif1 poppler-utils libproj-dev gdal-bin libgdal-dev python3-gdal
 
@@ -11,16 +8,13 @@ find / -name  libpoppler.so.118
 
 echo "THIS IS $LD_LIBRARY_PATH"
 echo "!!!!!!!!!!!!!!!!!!!"
-# nix-env -iA nixos.libheif
-# nix-env -iA nixpkgs.libheif
-nix-channel --update
 
 cp /usr/lib/x86_64-linux-gnu/libpoppler.so.118 /usr/lib
 
-cp -r /usr/lib/x86_64-linux-gnu/libheif.so.1 /usr/lib
+cp  /usr/lib/x86_64-linux-gnu/libheif.so.1 /usr/lib
 
-
-echo "$LD_LIBRARY_PATH"
+echo "!!!!!!!!!!!!!!!!!!!!!!"
+echo "THIS IS $LD_LIBRARY_PATH"
 echo "FOUND THE FILEPATH"
 pip install --global-option=build_ext --global-option="-I/usr/include/gdal" GDAL==`gdal-config --version`
 
