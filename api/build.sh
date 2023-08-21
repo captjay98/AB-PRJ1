@@ -3,7 +3,7 @@
 # set -o errexit
 
 
-apt update -y && apt upgrade -y && apt install -y --no-install-recommends binutils libproj-dev gdal-bin libgdal-dev python3-gdal python3.8-dev -y
+apt update -y && apt upgrade -y && apt install -y --no-install-recommends binutils libproj-dev gdal-bin libgdal-dev python3-gdal python3.8-dev
 
 
 pip install --global-option=build_ext --global-option="-I/usr/include/gdal" GDAL==`gdal-config --version`
