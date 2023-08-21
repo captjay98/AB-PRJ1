@@ -17,7 +17,7 @@ nix-channel --update
 
 cp /usr/lib/x86_64-linux-gnu/libpoppler.so.118 /usr/lib
 
-cp -r /usr/lib/x86_64-linux-gnu/ /usr/lib
+cp -r /usr/lib/x86_64-linux-gnu/libheif.so.1 /usr/lib
 
 
 echo "$LD_LIBRARY_PATH"
