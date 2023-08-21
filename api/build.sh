@@ -3,8 +3,8 @@
 apt update -y && apt upgrade -y && apt install -y --no-install-recommends binutils libheif-dev libheif1 poppler-utils libproj-dev gdal-bin libgdal-dev python3-gdal
 
 ldconfig
-# echo "FOUND THE Popplerr"
-find / -name  libpoppler.so.118
+# echo "FOUND THE JSON"
+find / -name  libjson-c.so.5
 
 echo "THIS IS $LD_LIBRARY_PATH"
 echo "!!!!!!!!!!!!!!!!!!!"
@@ -12,6 +12,8 @@ echo "!!!!!!!!!!!!!!!!!!!"
 cp /usr/lib/x86_64-linux-gnu/libpoppler.so.118 /usr/lib
 
 cp  /usr/lib/x86_64-linux-gnu/libheif.so.1 /usr/lib
+
+cp  /usr/lib/x86_64-linux-gnu/libjson-c.so.5 /usr/lib
 
 echo "!!!!!!!!!!!!!!!!!!!!!!"
 echo "THIS IS $LD_LIBRARY_PATH"
