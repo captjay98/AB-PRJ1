@@ -5,7 +5,8 @@
 
 apt update -y && apt upgrade -y && apt install -y --no-install-recommends binutils libheif-dev libheif1 libproj-dev gdal-bin libgdal-dev python3-gdal
 
-
+ldconfig
+find / -name libheif.so.1
 pip install --global-option=build_ext --global-option="-I/usr/include/gdal" GDAL==`gdal-config --version`
 
 
