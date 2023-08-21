@@ -11,7 +11,7 @@ find / -name libheif.so.1
 
 echo "$LD_LIBRARY_PATH"
 echo "DIDN'T FIND THE FIlEPATH"
-LD_LIBRARY_PATH=/nix/store/wprxx5zkkk13hpj6k1v6qadjylh3vq9m-gcc-11.3.0-lib/lib:/nix/store/zaflwh2nwzj1f0wngd7hqm3nvlf3yhsx-zlib-1.2.13/lib:/usr/lip
+LD_LIBRARY_PATH=/nix/store/wprxx5zkkk13hpj6k1v6qadjylh3vq9m-gcc-11.3.0-lib/lib:/nix/store/zaflwh2nwzj1f0wngd7hqm3nvlf3yhsx-zlib-1.2.13/lib:/usr/lib
 # LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/
 export LD_LIBRARY_PATH 
 echo $LD_LIBRARY_PATH
