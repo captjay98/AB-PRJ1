@@ -3,7 +3,7 @@
 # set -o errexit
 
 
-apt update -y && apt upgrade -y && apt install -y --no-install-recommends binutils libheif-dev libheif1 libproj-dev gdal-bin libgdal-dev python3-gdal
+apt update -y && apt upgrade -y && apt install -y --no-install-recommends binutils libheif-dev libheif1 poppler-utils libproj-dev gdal-bin libgdal-dev python3-gdal
 
 ldconfig
 echo "FOUND THE DIRECTORY"
@@ -11,8 +11,8 @@ find / -name libheif.so.1
 
 echo "$LD_LIBRARY_PATH"
 echo "DIDN'T FIND THE FIlEPATH"
-nix-env -iA nixos.libheif
-nix-env -iA nixpkgs.libheif
+# nix-env -iA nixos.libheif
+# nix-env -iA nixpkgs.libheif
 nix-channel --update
 
 cp /usr/lib/x86_64-linux-gnu/libheif.so.1 /usr/lib
