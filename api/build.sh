@@ -11,6 +11,9 @@ find / -name libheif.so.1
 
 echo "$LD_LIBRARY_PATH"
 echo "DIDN'T FIND THE FIlEPATH"
+nix-env -qaP | grep libheif
+nix-channel --update
+
 nix-env -iA nixpkgs.libheif
 # export LD_LIBRARY_PATH=/path/to/libheif/libs:$LD_LIBRARY_PATH
 echo "What is going onnnn"
