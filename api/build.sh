@@ -1,7 +1,10 @@
-#!/usr/bin/env bash
+# !/usr/bin/env bash
 # exit on error
-set -o errexit
+# set -o errexit
 
+
+ apt update -y && apt upgrade -y && apt install -y --no-install-recommends
+ binutils libproj-dev gdal-bin libgdal-dev python3-gdal
 
 pip install -r requirements.txt
 python manage.py collectstatic --no-input
@@ -20,3 +23,4 @@ python manage.py migrate employers
 
 python manage.py makemigrations
 python manage.py migrate
+
