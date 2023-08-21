@@ -6,22 +6,22 @@
 apt update -y && apt upgrade -y && apt install -y --no-install-recommends binutils libheif-dev libheif1 poppler-utils libproj-dev gdal-bin libgdal-dev python3-gdal
 
 ldconfig
-echo "FOUND THE DIRECTORY"
-find / -name libheif.so.1
+# echo "FOUND THE Popplerr"
+find / -name  libpoppler.so.118
 
-echo "$LD_LIBRARY_PATH"
-echo "DIDN'T FIND THE FIlEPATH"
+echo "THIS IS $LD_LIBRARY_PATH"
+echo "!!!!!!!!!!!!!!!!!!!"
 # nix-env -iA nixos.libheif
 # nix-env -iA nixpkgs.libheif
 nix-channel --update
 
 cp /usr/lib/x86_64-linux-gnu/libheif.so.1 /usr/lib
-export LD_LIBRARY_PATH 
+
 echo "$LD_LIBRARY_PATH"
 echo "FOUND THE FILEPATH"
 pip install --global-option=build_ext --global-option="-I/usr/include/gdal" GDAL==`gdal-config --version`
 
-
+# export LD_LIBRARY_PATH 
 # nix-env -iA nixpkgs.libheif
 # export LD_LIBRARY_PATH=/path/to/libheif/libs:$LD_LIBRARY_PATH
 # echo "What is going onnnn"
