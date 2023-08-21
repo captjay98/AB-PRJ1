@@ -1,9 +1,9 @@
 !/usr/bin/bash
 
-apt update -y && apt upgrade -y && apt install -y --no-install-recommends binutils libheif-dev libheif1 poppler-utils libproj-dev gdal-bin libgdal-dev python3-gdal
+apt update -y && apt upgrade -y && apt install -y --no-install-recommends binutils libheif-dev libheif1 poppler-utils libjson-c-dev libproj-dev gdal-bin libgdal-dev python3-gdal
 
 ldconfig
-# echo "FOUND THE JSON"
+echo "FOUND THE JSON"
 find / -name  libjson-c.so.5
 
 echo "THIS IS $LD_LIBRARY_PATH"
@@ -14,6 +14,8 @@ cp /usr/lib/x86_64-linux-gnu/libpoppler.so.118 /usr/lib
 cp  /usr/lib/x86_64-linux-gnu/libheif.so.1 /usr/lib
 
 cp  /usr/lib/x86_64-linux-gnu/libjson-c.so.5 /usr/lib
+
+ cp  /usr/lib/x86_64-linux-gnu/libfreexl.so.1 /usr/lib
 
 echo "!!!!!!!!!!!!!!!!!!!!!!"
 echo "THIS IS $LD_LIBRARY_PATH"
