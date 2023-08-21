@@ -16,7 +16,6 @@ django-jazzmin==2.6.0
 django-storages==1.13.2
 djangorestframework==3.14.0
 djangorestframework-simplejwt==5.2.2
-GDAL==gdal3.6.0
 geographiclib==2.0
 geopy==2.3.0
 gunicorn==20.1.0
