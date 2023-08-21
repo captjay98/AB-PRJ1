@@ -10,11 +10,10 @@ echo "FOUND THE DIRECTORY"
 find / -name libheif.so.1
 
 echo $LD_LIBRARY_PATH
+echo "DIDN'T FIND THE FIlEPATH"
 
 LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/
 export LD_LIBRARY_PATH 
-echo "DIDN'T FIND THE FIlEPATH"
-
 echo $LD_LIBRARY_PATH
 echo "FOUND THE FILEPATH"
 pip install --global-option=build_ext --global-option="-I/usr/include/gdal" GDAL==`gdal-config --version`
