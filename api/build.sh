@@ -1,7 +1,12 @@
 !/usr/bin/bash
 
-#apt update -y && apt upgrade -y && apt install -y --no-install-recommends binutils libstdc++6 libheif-dev libheif1 poppler-utils libjson-c-dev libproj-dev gdal-bin libgdal-dev python3-gdal
+apt update -y && apt upgrade -y && apt install -y --no-install-recommends binutils libstdc++6 libheif-dev libheif1 poppler-utils libjson-c-dev libproj-dev gdal-bin libgdal-dev python3-gdal
 
+
+echo "INSTALLING NIXXXXXXXXXXX"
+nix-env -f . -iA binutils libstdc++6 libheif-dev libheif1 poppler-utils libjson-c-dev libproj-dev gdal-bin libgdal-dev python3-gdal
+
+# , 'binutils', 'libstdc++6', 'libheif-dev', 'libheif1', 'poppler-utils', 'libjson-c-dev', 'libproj-dev', 'gdal-bin', 'libgdal-dev', 'python3-gdal'
 #ldconfig
 echo "FOUND THE JSON"
 find / -name  libjson-c.so.5
@@ -19,7 +24,7 @@ echo "!!!!!!!!!!!!!!!!!!!"
 
 # cp  /usr/lib/x86_64-linux-gnu/libqhull_r.so.8.0 /usr/lib
 
-# cp  -r /usr/lib/x86_64-linux-gnu/* /usr/lib
+cp  -r /usr/lib/x86_64-linux-gnu/* /usr/lib
 
 echo "!!!!!!!!!!!!!!!!!!!!!!"
 echo "THIS IS $LD_LIBRARY_PATH"
