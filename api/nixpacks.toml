@@ -1,2 +1,4 @@
+
 [phases.setup]
+aptPkgs = ["...", "libstdc++6"]
 nixPkgs = ["...", "libheif"]
