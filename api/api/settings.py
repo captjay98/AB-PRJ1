@@ -28,7 +28,8 @@ SECRET_KEY = env("SECRET_KEY")
 
 DEBUG = env("DEBUG")
 
-ALLOWED_HOSTS = ["interviewdemo.onrender.com", "127.0.0.1", "localhost"]
+ALLOWED_HOSTS = ["interviewdemo.onrender.com", "ab-prj1-production.up.railway.app", "127.0.0.1", "localhost"]
+CSRF_TRUSTED_ORIGINS= ["https://interviewdemo.onrender.com", "https://ab-prj1-production.up.railway.app", "localhost:3000"]
 
 
 INSTALLED_APPS = [
