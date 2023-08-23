@@ -1,4 +1,4 @@
 
 [phases.setup]
-aptPkgs = ['...', 'binutils', 'libstdc++6', 'libheif-dev', 'libheif1', 'poppler-utils', 'libjson-c-dev', 'libproj-dev', 'gdal-bin', 'libgdal-dev', 'python3-gdal']
-nixPkgs = ['...', 'binutils', 'libstdc++6', 'libheif-dev', 'libheif1', 'poppler-utils', 'libjson-c-dev', 'libproj-dev', 'gdal-bin', 'libgdal-dev', 'python3-gdal']
+aptPkgs = ['...']
+nixPkgs = ['...']
