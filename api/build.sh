@@ -1,25 +1,25 @@
 !/usr/bin/bash
 
-apt update -y && apt upgrade -y && apt install -y --no-install-recommends binutils libstdc++6 libheif-dev libheif1 poppler-utils libjson-c-dev libproj-dev gdal-bin libgdal-dev python3-gdal
+#apt update -y && apt upgrade -y && apt install -y --no-install-recommends binutils libstdc++6 libheif-dev libheif1 poppler-utils libjson-c-dev libproj-dev gdal-bin libgdal-dev python3-gdal
 
-ldconfig
+#ldconfig
 echo "FOUND THE JSON"
 find / -name  libjson-c.so.5
 
-echo "THIS IS $LD_LIBRARY_PATH"
+#echo "THIS IS $LD_LIBRARY_PATH"
 echo "!!!!!!!!!!!!!!!!!!!"
 
-cp /usr/lib/x86_64-linux-gnu/libpoppler.so.118 /usr/lib
+# cp /usr/lib/x86_64-linux-gnu/libpoppler.so.118 /usr/lib
 
-cp  /usr/lib/x86_64-linux-gnu/libheif.so.1 /usr/lib
+# cp  /usr/lib/x86_64-linux-gnu/libheif.so.1 /usr/lib
 
-cp  /usr/lib/x86_64-linux-gnu/libjson-c.so.5 /usr/lib
+# cp  /usr/lib/x86_64-linux-gnu/libjson-c.so.5 /usr/lib
 
-cp  /usr/lib/x86_64-linux-gnu/libfreexl.so.1 /usr/lib
+# cp  /usr/lib/x86_64-linux-gnu/libfreexl.so.1 /usr/lib
 
-cp  /usr/lib/x86_64-linux-gnu/libqhull_r.so.8.0 /usr/lib
+# cp  /usr/lib/x86_64-linux-gnu/libqhull_r.so.8.0 /usr/lib
 
-cp  -r /usr/lib/x86_64-linux-gnu/* /usr/lib
+# cp  -r /usr/lib/x86_64-linux-gnu/* /usr/lib
 
 echo "!!!!!!!!!!!!!!!!!!!!!!"
 echo "THIS IS $LD_LIBRARY_PATH"
