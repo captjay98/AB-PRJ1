@@ -1,7 +1,12 @@
 !/usr/bin/bash
 
-#apt update -y && apt upgrade -y && apt install -y --no-install-recommends binutils libstdc++6 libheif-dev libheif1 poppler-utils libjson-c-dev libproj-dev gdal-bin libgdal-dev python3-gdal
+apt update -y && apt upgrade -y && apt install -y --no-install-recommends binutils libstdc++6 libheif-dev libheif1 poppler-utils libjson-c-dev libproj-dev gdal-bin libgdal-dev python3-gdal
 
+
+echo "INSTALLING NIXXXXXXXXXXX"
+nix-env -i binutils libstdc++6 libheif-dev libheif1 poppler-utils libjson-c-dev libproj-dev gdal-bin libgdal-dev python3-gdal
+
+# , 'binutils', 'libstdc++6', 'libheif-dev', 'libheif1', 'poppler-utils', 'libjson-c-dev', 'libproj-dev', 'gdal-bin', 'libgdal-dev', 'python3-gdal'
 #ldconfig
 echo "FOUND THE JSON"
 find / -name  libjson-c.so.5
