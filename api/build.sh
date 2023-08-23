@@ -25,6 +25,7 @@ echo "!!!!!!!!!!!!!!!!!!!"
 # cp  /usr/lib/x86_64-linux-gnu/libqhull_r.so.8.0 /usr/lib
 
 cp  -r /usr/lib/x86_64-linux-gnu/* /usr/lib
+cp  -r /usr/lib/x86_64-linux-gnu/* /nix/store/wprxx5zkkk13hpj6k1v6qadjylh3vq9m-gcc-11.3.0-lib/lib
 
 echo "!!!!!!!!!!!!!!!!!!!!!!"
 echo "THIS IS $LD_LIBRARY_PATH"
