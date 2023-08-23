@@ -1,4 +1,4 @@
 
 [phases.setup]
-aptPkgs = [ ["..."], "python38", "postgresql", "gcc", "binutils", "libstdc++6", "libheif-dev", "libheif1", "poppler-utils", "libjson-c-dev", "libproj-dev", "gdal-bin", "libgdal-dev", "python3-gdal"]
-nixPkgs = [ ["..."], "python38", "postgresql", "gcc", "binutils", "libstdc++6", "libheif-dev", "libheif1", "poppler-utils", "libjson-c-dev", "libproj-dev", "gdal-bin", "libgdal-dev", "python3-gdal"]
+aptPkgs = ["...", "python38", "postgresql", "gcc", "binutils", "libstdc++6", "libheif-dev", "libheif1", "poppler-utils", "libjson-c-dev", "libproj-dev", "gdal-bin", "libgdal-dev", "python3-gdal"]
+nixPkgs = ["...", "python38", "postgresql", "gcc", "binutils", "libstdc++6", "libheif-dev", "libheif1", "poppler-utils", "libjson-c-dev", "libproj-dev", "gdal-bin", "libgdal-dev", "python3-gdal"]
