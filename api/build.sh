@@ -4,7 +4,7 @@ apt update -y && apt upgrade -y && apt install -y --no-install-recommends binuti
 
 
 echo "INSTALLING NIXXXXXXXXXXX"
-nix-env -i binutils libstdc++6 libheif-dev libheif1 poppler-utils libjson-c-dev libproj-dev gdal-bin libgdal-dev python3-gdal
+nix-env -i  libstdc++6 libheif-dev libheif1 poppler-utils libjson-c-dev libproj-dev gdal-bin libgdal-dev python3-gdal
 
 # , 'binutils', 'libstdc++6', 'libheif-dev', 'libheif1', 'poppler-utils', 'libjson-c-dev', 'libproj-dev', 'gdal-bin', 'libgdal-dev', 'python3-gdal'
 #ldconfig
