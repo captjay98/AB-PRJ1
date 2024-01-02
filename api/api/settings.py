@@ -12,9 +12,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 import os
 from pathlib import Path
-import environ
-from urllib.parse import urlparse
 
+import environ
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -28,8 +27,16 @@ SECRET_KEY = env("SECRET_KEY")
 
 DEBUG = env("DEBUG")
 
-ALLOWED_HOSTS = ["interviewdemo.onrender.com", "ab-prj1-production.up.railway.app", "127.0.0.1", "localhost"]
-CSRF_TRUSTED_ORIGINS= ["https://interviewdemo.onrender.com", "https://ab-prj1-production.up.railway.app"]
+ALLOWED_HOSTS = [
+    "jobsite-django.onrender.com",
+    "jobsite-django.up.railway.app",
+    "127.0.0.1",
+    "localhost",
+]
+CSRF_TRUSTED_ORIGINS = [
+    "https://interviewdemo.onrender.com",
+    "https://ab-prj1-production.up.railway.app",
+]
 
 
 INSTALLED_APPS = [
