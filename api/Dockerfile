@@ -1,5 +1,6 @@
 FROM python:3.9
-RUN apt update -y && apt install -y --no-install-recommends binutils libstdc++6 libheif-dev libheif1 poppler-utils libjson-c-dev libproj-dev gdal-bin libgdal-dev python3-gdal
+RUN apt update -y && apt install -y --no-install-recommends binutils libstdc++6 libheif-dev libheif1 \
+  poppler-utils libjson-c-dev libproj-dev gdal-bin libgdal-dev python3-gdal
 WORKDIR /app
 COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
